@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>باشگاه ذهن گروهی 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#080d1d;--panel:rgba(18,27,53,.92);--ink:#f0f5ff;--soft:#a8b6d9;
+--hot:#ffca66;--ok:#54e6a5;--bad:#ff6b91;--line:rgba(135,160,230,.25);
+--t1:#5ce5d7;--t2:#ff8a95;
+}
+html,body{height:100%}
+body{
+background:radial-gradient(ellipse at 85% -5%,rgba(137,72,255,.28),transparent 45%),
+radial-gradient(ellipse at 5% 45%,rgba(34,211,238,.12),transparent 42%),
+linear-gradient(145deg,#080d1d,#10152d 58%,#090d1d);
+background-attachment:fixed;color:var(--ink);
+font-family:Vazirmatn,Tahoma,sans-serif;
+display:flex;justify-content:center;align-items:flex-start;
+padding:clamp(10px,3vw,24px);min-height:100vh;
+}
+main{width:100%;max-width:1000px}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;letter-spacing:-.5px;
+background:linear-gradient(100deg,#fff0bd,#65f1e5 45%,#bd9bff 85%);
+-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 18px #4b7aff30);margin-bottom:4px}
+.sub{color:var(--soft);line-height:1.9;font-size:clamp(.9rem,2.5vw,1.05rem)}
+.btn{font:inherit;font-weight:900;font-size:clamp(.95rem,2.8vw,1.1rem);
+padding:clamp(10px,2.5vw,14px) clamp(20px,5vw,36px);border-radius:16px;border:0;
+background:linear-gradient(115deg,#ffd783,#ffb84d);color:#201532;
+box-shadow:0 4px 0 #b66c37,0 8px 24px #ffbd5930;cursor:pointer;
+transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.06);transform:translateY(-2px)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #b66c37}
+.btn.sm{padding:8px 18px;font-size:clamp(.8rem,2.2vw,.95rem)}
+.btn.ghost{background:#ffffff0f;color:var(--ink);box-shadow:none;border:1px solid var(--line)}
+.card{background:linear-gradient(150deg,rgba(23,34,65,.95),rgba(13,21,43,.96));
+border:1px solid #8ca6ee3d;border-radius:26px;
+padding:clamp(16px,4vw,28px);box-shadow:0 24px 70px #0005,inset 0 1px #ffffff0b;
+backdrop-filter:blur(14px);margin-bottom:16px}
+.teams{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+.team{flex:1;min-width:140px;padding:14px 18px;border-radius:18px;
+border:2px solid transparent;background:#ffffff08;transition:.3s;position:relative}
+.team.active{border-color:var(--hot);background:#ffca6615;box-shadow:0 0 30px #ffca6622}
+.team .name{font-weight:900;font-size:clamp(1rem,3vw,1.3rem);display:flex;align-items:center;gap:8px}
+.team .score{font-size:clamp(2rem,6vw,3rem);font-weight:900;line-height:1.1;margin-top:4px}
+.team.t1 .score,.team.t1 .name{color:var(--t1)}
+.team.t2 .score,.team.t2 .name{color:var(--t2)}
+.team .turn-badge{position:absolute;top:-10px;left:14px;background:var(--hot);color:#201532;
+font-size:.75rem;font-weight:900;padding:2px 10px;border-radius:20px;display:none}
+.team.active .turn-badge{display:block}
+.timer-wrap{height:14px;border-radius:7px;background:#ffffff12;overflow:hidden;margin:10px 0}
+.timer-bar{height:100%;width:100%;background:linear-gradient(90deg,#54e6a5,#ffca66,#ff6b91);
+transition:width .2s linear;border-radius:7px}
+.timer-text{text-align:center;font-weight:900;font-size:clamp(1.2rem,3.5vw,1.6rem);color:var(--hot);margin:4px 0}
+.question{font-size:clamp(1.2rem,3.8vw,1.8rem);font-weight:900;line-height:1.8;margin:18px 0;text-align:center}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{font:inherit;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
+padding:16px 12px;border-radius:16px;border:2px solid var(--line);
+background:#202d50;color:#eaf1ff;cursor:pointer;transition:.16s;min-height:60px}
+.opt:hover{border-color:#5de6dd;transform:translateY(-2px)}
+.opt:disabled{opacity:.6;cursor:default;transform:none}
+.opt.correct{background:#155c51;border-color:var(--ok);color:#e8fff7}
+.opt.wrong{background:#65283f;border-color:var(--bad);color:#fff}
+.fb{text-align:center;font-weight:900;font-size:clamp(1rem,2.8vw,1.2rem);min-height:2em;margin:10px 0}
+.hidden{display:none!important}
+.pantomime-word{font-size:clamp(1.8rem,7vw,3.4rem);font-weight:900;text-align:center;
+padding:30px;border-radius:24px;background:linear-gradient(145deg,#6656f4,#2dd4bf);
+color:#fff;box-shadow:0 20px 60px #6c5ce755;margin:16px 0;line-height:1.4}
+.poem-line{font-size:clamp(1.3rem,4vw,2rem);font-weight:700;text-align:center;
+line-height:2;margin:20px 0;padding:20px;border-radius:20px;
+background:linear-gradient(160deg,#F6E7C1,#E3CB94);color:#3B2A14;
+box-shadow:inset 0 0 0 3px #B88A3E}
+.img-box{width:100%;max-height:50vh;border-radius:20px;overflow:hidden;
+margin:16px 0;box-shadow:0 20px 50px #0006;border:2px solid var(--line);background:#0a1020}
+.img-box svg,.img-box img{width:100%;height:auto;display:block}
+.spin-wheel{width:min(300px,80vw);height:min(300px,80vw);border-radius:50%;
+margin:20px auto;position:relative;
+background:conic-gradient(var(--t1) 0deg 45deg,var(--hot) 45deg 90deg,
+var(--bad) 90deg 135deg,var(--t2) 135deg 180deg,
+var(--t1) 180deg 225deg,var(--hot) 225deg 270deg,
+var(--bad) 270deg 315deg,var(--t2) 315deg 360deg);
+box-shadow:0 0 0 8px #ffffff15,0 20px 60px #0006;transition:transform 3s cubic-bezier(.17,.67,.12,1)}
+.wheel-center{position:absolute;inset:0;display:grid;place-items:center;font-size:3rem}
+.wheel-pointer{text-align:center;font-size:2rem;margin-bottom:-8px}
+.wheel-result{text-align:center;font-weight:900;font-size:clamp(1.1rem,3.5vw,1.6rem);
+margin:16px 0;min-height:2.5em;padding:16px;border-radius:16px;background:#ffffff0a}
+.player-input{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.player-input input{font:inherit;padding:12px 16px;border-radius:14px;border:2px solid var(--line);
+background:#ffffff0a;color:var(--ink);font-size:1rem;width:200px;text-align:center}
+.player-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;
+background:#ffffff0f;font-weight:700;font-size:.9rem;border:1px solid var(--line)}
+.players-list{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0}
+.awards{display:grid;gap:10px;margin:16px 0}
+.award{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:16px;
+background:#ffffff08;border:1px solid var(--line)}
+.award .icon{font-size:1.8rem}
+.award .text{font-weight:700}
+.stage-dots{display:flex;gap:6px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.stage-dot{width:10px;height:10px;border-radius:50%;background:#526083;transition:.3s}
+.stage-dot.done{background:var(--t1);box-shadow:0 0 10px #5ce5d766}
+.stage-dot.current{background:var(--hot);box-shadow:0 0 14px #ffca6688;transform:scale(1.4)}
+.footer-nav{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.turn-info{text-align:center;padding:10px;background:#ffffff08;border-radius:12px;
+font-weight:700;font-size:clamp(.95rem,2.8vw,1.1rem);margin-bottom:12px}
+.turn-info .tname{font-weight:900}
+.turn-info .t1{color:var(--t1)}.turn-info .t2{color:var(--t2)}
+@media(max-width:480px){.team{padding:10px 12px}.team .score{font-size:2rem}}
+main{position:relative;z-index:1}
+.fl{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.fl span{position:absolute;bottom:-60px;opacity:.13;animation:fly linear infinite}
+@keyframes fly{to{transform:translateY(-120vh) rotate(360deg)}}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:99}
+.c{text-align:center}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.shake{animation:shake .5s}
+@keyframes shake{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.pop{animation:popin .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes popin{from{transform:scale(.6);opacity:0}}
+.intro{text-align:center;padding:18px 6px}
+.intro .big{font-size:clamp(4.5rem,20vw,8rem);display:inline-block;animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-14px) rotate(7deg)}}
+.intro h2{font-size:clamp(1.5rem,6vw,2.4rem);margin:6px 0}
+.eq{display:flex;gap:4px;height:46px;align-items:flex-end;justify-content:center;margin:14px 0}
+.eq i{width:7px;height:8px;background:#fff;border-radius:4px}
+.eq.on i{animation:eq .5s ease-in-out infinite alternate}
+.eq.on i:nth-child(2n){animation-delay:.12s}.eq.on i:nth-child(3n){animation-delay:.25s}
+@keyframes eq{to{height:46px}}
+.who{text-align:center;font-weight:900;color:var(--hot);margin:6px 0;font-size:1.05rem}
+.chip{display:inline-block;padding:4px 14px;border-radius:20px;margin:4px;font-weight:700;background:#ffffff1c}
+.bigcard{animation:popin .5s cubic-bezier(.2,1.6,.4,1)}
+.wlab{position:absolute;left:50%;top:50%;font-size:1.7rem;margin:-.85rem 0 0 -.85rem;transform:rotate(var(--a)) translateY(calc(var(--r)*-1))}
+.spin-wheel{--r:calc(min(300px,80vw)*.36)}
+.tb{display:flex;gap:6px}.tb .btn{padding:6px 12px}
+.tinp{font:inherit;font-weight:900;background:transparent;border:0;border-bottom:2px dashed var(--line);color:inherit;width:100%;font-size:1.1rem}
+.vit{display:inline-flex;gap:8px;align-items:center;background:#ffffff0f;border:1px solid var(--line);border-radius:20px;padding:4px 12px;margin:3px;font-weight:700}
+.vit b{cursor:pointer}
+body.tv main{max-width:none;width:96%;zoom:1.3}
+@media(min-width:820px) and (orientation:landscape){body main{max-width:1400px;zoom:1.2}}
+body.tv #tvb{opacity:.45}
+</style>
+</head>
+<body>
+<main><div id="app"></div></main>
+<script src="assets.js"></script>
+<script src="questions.js"></script>
+<script>
+const $=id=>document.getElementById(id),fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]),rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)],
+shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a},app=$('app');
+/* ===== صدا ===== */
+let AC=null,mute=false,mus=null;
+const ctx=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
+function snd(f,d=.12,type='sine',v=.15,f2,dl=0){try{if(mute)return;const c=ctx(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+dl;
+o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d)}catch(e){}}
+function noise(d=.2,v=.2,fc=1800,dl=0){try{if(mute)return;const c=ctx(),n=c.sampleRate*d,b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;
+const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain(),t=c.currentTime+dl;s.buffer=b;f.type='bandpass';f.frequency.value=fc;
+g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}catch(e){}}
+const seq=(n,st=.09,ty='triangle',d=.2,v=.15)=>n.forEach((f,i)=>snd(f,d,ty,v,0,i*st));
+const sfx={tick:()=>snd(800,.06,'square',.07),urgent:()=>snd(1100,.09,'square',.12),
+good:()=>seq([660,880,1320],.08),bad:()=>{snd(300,.45,'sawtooth',.12,80);snd(150,.3,'square',.08,60,.1)},
+win:()=>{seq([523,659,784,1047,784,1047,1319],.11);sfx.clap()},lose:()=>seq([392,330,262,196],.18,'sawtooth',.1),
+ding:()=>seq([1200,1800],.07,'sine',.12),whoosh:()=>{snd(200,.4,'sine',.12,1400);noise(.35,.12,3000)},
+clap:()=>{for(let i=0;i<16;i++)noise(.07,.22,1200+rnd(1500),i*.06)},drum:()=>{for(let i=0;i<9;i++)snd(100,.12,'sine',.3,50,i*.09);noise(.4,.2,5000,.85)},
+boing:()=>{snd(180,.5,'sine',.22,700);snd(700,.3,'sine',.1,300,.25)},tada:()=>{seq([392,523,659],.1,'square',.2,.1);seq([784,1047],.12,'triangle',.5,.18);sfx.clap()}};
+function music(on){clearInterval(mus);mus=null;if(!on)return;const P=[262,294,330,392,440,523,440,392],B=[131,131,196,196,175,175,196,196];let i=0;
+mus=setInterval(()=>{snd(B[(i>>1)%8],.2,'triangle',.07);if(i%2==0||Math.random()>.5)snd(P[(i*3+rnd(2))%8],.15,'sine',.05);i++},240)}
+/* ===== کانفتی و پس‌زمینه ===== */
+let cv,cx,parts=[],raf=0;
+function confetti(n=120){cv=cv||$('cf');cv.width=innerWidth;cv.height=innerHeight;cx=cv.getContext('2d');
+for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*240,y:innerHeight*.45,vx:(Math.random()-.5)*17,vy:-Math.random()*17-3,s:7+Math.random()*7,c:`hsl(${rnd(360)},90%,62%)`,r:0,vr:(Math.random()-.5)*.4,l:150});
+if(!raf)lp()}
+function lp(){cx.clearRect(0,0,cv.width,cv.height);parts=parts.filter(p=>p.l>0);parts.forEach(p=>{p.vy+=.36;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;p.l--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.globalAlpha=Math.min(1,p.l/40);cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});raf=parts.length?requestAnimationFrame(lp):0}
+/* ===== تایمر ===== */
+let tInt=null;
+let SRV=false,FPK=false,GHM=false;
+const srvMsg=()=>SRV?'🟢 متصل به سرور پوشه: عکس‌ها و صداها از پوشه‌ی <b>images</b> و <b>sounds</b> خوانده و در آن‌ها ذخیره می‌شوند.':GHM?'☁️ پوشه‌ها از GitHub خوانده شد: '+fa(FB('images'))+' عکس و '+fa(FB('sounds'))+' صدا. (فایل‌های جدید را در GitHub آپلود کن؛ بعد از ~۱ دقیقه خودکار می‌آیند.)':FPK?'📂 پوشه‌ی پروژه خوانده شد: '+fa(FB('images'))+' عکس و '+fa(FB('sounds'))+' صدا.':'⚪ نسخه‌ی مستقیم (بدون سرور): مرورگر خودش پوشه‌ها را نمی‌بیند. یا فایل <b>start-server</b> را اجرا کن، یا در Chrome/Edge کامپیوتر دکمه‌ی زیر را بزن.'+(window.showDirectoryPicker?'<br><button class="btn sm" id="pickdir" style="margin-top:8px">📂 خواندن پوشه‌ی پروژه (images و sounds)</button>':'');
+async function ghList(){const h=location.hostname;if(!/\.github\.io$/.test(h))return;const u=h.split('.')[0],sg=location.pathname.split('/')[1],rp=(!sg||/\./.test(sg))?h:sg,o={images:[],sounds:[]},ex={images:/\.(jpe?g|png|webp|gif|svg)$/i,sounds:/\.(mp3|wav|ogg|m4a|aac|webm)$/i};
+for(const k of['images','sounds']){try{const x=await fetch('https://api.github.com/repos/'+u+'/'+rp+'/contents/'+k);if(!x.ok)continue;(await x.json()).forEach(f=>{if(f.type=='file'&&ex[k].test(f.name))o[k].push({file:k+'/'+f.name,name:f.name.replace(/\.[^.]+$/,'').replace(/^[0-9]+[-_ .]+/,'').replace(/_/g,' ')})})}catch(e){}}
+if(o.images.length||o.sounds.length){window.PARTY_ASSETS=o;GHM=true;if(state.phase=='setup')render()}}
+async function pickDir(){const d=await showDirectoryPicker(),o={images:[],sounds:[]};
+for(const[k,ex]of[['images',/\.(jpe?g|png|webp|gif|svg)$/i],['sounds',/\.(mp3|wav|ogg|m4a|aac|webm)$/i]]){let h;try{h=await d.getDirectoryHandle(k)}catch(e){continue}
+for await(const[n,fh]of h.entries())if(fh.kind=='file'&&ex.test(n)){const f=await fh.getFile();o[k].push({file:URL.createObjectURL(f),name:n.replace(/\.[^.]+$/,'').replace(/^[0-9]+[-_ .]+/,'').replace(/_/g,' ')})}}
+window.PARTY_ASSETS=o;FPK=true}
+const extOf=b=>{const m={jpeg:'jpg','svg+xml':'svg',mpeg:'mp3',mp4:'m4a','x-m4a':'m4a','x-wav':'wav',wave:'wav'},n=b.name||'';if(n.includes('.'))return n.split('.').pop().toLowerCase();const t=((b.type||'').split('/')[1]||'').split(';')[0];return m[t]||t};
+async function srvUp(kind,name,blob){const j=await(await fetch('api/upload?kind='+kind+'&name='+encodeURIComponent(name)+'&ext='+extOf(blob),{method:'POST',body:blob})).json();if(!j.ok)throw new Error(j.error||'خطا');window.PARTY_ASSETS=j.assets}
+async function srvDel(kind,file){const j=await(await fetch('api/delete?kind='+kind+'&file='+encodeURIComponent(file),{method:'POST'})).json();if(j.ok)window.PARTY_ASSETS=j.assets}
+const FB=k=>((window.PARTY_ASSETS||{})[k]||[]).length;
+let curAu=null;const stopAudio=()=>{if(curAu){curAu.pause();curAu=null}const e=document.getElementById('eq');if(e)e.classList.remove('on')};
+function stopTimer(){clearInterval(tInt);tInt=null}
+function startTimer(sec,onEnd){stopTimer();const tot=sec*1000,st=Date.now();let last=sec;const bar=$('timerBar'),txt=$('timerText');
+if(txt)txt.textContent=fa(sec);
+tInt=setInterval(()=>{const left=Math.max(0,tot-(Date.now()-st)),s=Math.ceil(left/1000);
+if(s!==last){last=s;if(s<=5&&s>0)sfx.urgent();else if(s<=10&&s>0)sfx.tick();if(txt)txt.textContent=fa(s)}
+if(bar)bar.style.width=(left/tot*100)+'%';if(left<=0){stopTimer();onEnd()}},60)}
+/* ===== بانک صدا (IndexedDB) ===== */
+const DB=()=>new Promise((res,rej)=>{const r=indexedDB.open('mc_voices',2);r.onupgradeneeded=()=>{const d=r.result;['v','i'].forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n,{keyPath:'id'})})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej()});
+const vop=async(st,m,a,w)=>{try{const d=await DB();return await new Promise(r=>{const q=d.transaction(st,w?'readwrite':'readonly').objectStore(st)[m](a);q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])})}catch(e){return[]}};
+const vAll=()=>vop('v','getAll'),vPut=o=>vop('v','put',o,1),vDel=id=>vop('v','delete',id,1),iAll=()=>vop('i','getAll'),iPut=o=>vop('i','put',o,1),iDel=id=>vop('i','delete',id,1);
+/* ===== محتوا ===== */
+const POEMS=[
+{line:'بنی‌آدم اعضای یکدیگرند',ans:'که در آفرینش ز یک گوهرند'},
+{line:'چو عضوی به درد آورد روزگار',ans:'دگر عضوها را نماند قرار'},
+{line:'توانا بود هر که دانا بود',ans:'ز دانش دل پیر برنا بود'},
+{line:'به نام خداوند جان و خرد',ans:'کزین برتر اندیشه برنگذرد'},
+{line:'بشنو از نی چون حکایت می‌کند',ans:'از جدایی‌ها شکایت می‌کند'},
+{line:'هر کسی از ظن خود شد یار من',ans:'از درون من نجست اسرار من'},
+{line:'یوسف گمگشته بازآید به کنعان غم مخور',ans:'کلبهٔ احزان شود روزی گلستان غم مخور'},
+{line:'دل می‌رود ز دستم صاحبدلان خدا را',ans:'دردا که راز پنهان خواهد شد آشکارا'},
+{line:'ساقیا برخیز و در ده جام را',ans:'خاک بر سر کن غم ایام را'},
+{line:'ابر و باد و مه و خورشید و فلک در کارند',ans:'تا تو نانی به کف آری و به غفلت نخوری'},
+{line:'چو ایران نباشد تن من مباد',ans:'بدین بوم و بر زنده یک تن مباد'},
+{line:'بسی رنج بردم در این سال سی',ans:'عجم زنده کردم بدین پارسی'},
+{line:'ما ز بالاییم و بالا می‌رویم',ans:'ما ز دریاییم و دریا می‌رویم'},
+{line:'هفت شهر عشق را عطار گشت',ans:'ما هنوز اندر خم یک کوچه‌ایم'},
+{line:'هر که آمد عمارتی نو ساخت',ans:'رفت و منزل به دیگری پرداخت'},
+{line:'دو صد گفته چون نیم کردار نیست',ans:'بزرگی سراسر به گفتار نیست'},
+{line:'چو عضوی به درد آورد روزگار',ans:'دگر عضوها را نماند قرار'},
+{line:'سعدیا گر بکند سیل فنا بنیاد هستی',ans:'چون تو را نوح است کشتی‌بان، ز طوفان غم مخور'},
+{line:'ای دوست بیا تا غم فردا نخوریم',ans:'وین یک دم عمر را غنیمت شمریم'}
+];
+const IMAGES=[
+{name:'برج آزادی - تهران',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#E8E8E8" x="120" y="80" width="160" height="200" rx="10"/><path d="M120 80 Q200 20 280 80" fill="#D0D0D0" stroke="#A0A0A0" stroke-width="3"/><rect fill="#B0B0B0" x="180" y="180" width="40" height="100"/><rect fill="#A0A0A0" x="160" y="120" width="80" height="40"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#333">برج آزادی</text></svg>`},
+{name:'سی‌وسه‌پل - اصفهان',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#2E86AB" y="180" width="400" height="120"/><rect fill="#D4A574" x="20" y="140" width="360" height="40"/><g fill="#C49464">${[0,1,2,3,4,5,6].map(i=>`<rect x="${40+i*50}" y="120" width="30" height="20" rx="5"/>`).join('')}</g><g fill="#B88454">${[0,1,2,3,4,5,6].map(i=>`<rect x="${40+i*50}" y="150" width="30" height="50"/>`).join('')}</g><text x="200" y="290" text-anchor="middle" font-size="16" fill="#fff">سی‌وسه‌پل</text></svg>`},
+{name:'تخت جمشید - شیراز',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#C9A76A" y="200" width="400" height="100"/><g fill="#B8955A">${[0,1,2,3,4].map(i=>`<rect x="${40+i*70}" y="100" width="50" height="100" rx="3"/>`).join('')}</g><rect fill="#A8854A" x="150" y="60" width="100" height="140"/><path d="M150 60 L200 20 L250 60" fill="#987540"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#fff">تخت جمشید</text></svg>`},
+{name:'میدان نقش جهان - اصفهان',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#7FB069" y="200" width="400" height="100"/><rect fill="#D4A574" x="80" y="80" width="240" height="120" rx="5"/><path d="M80 80 Q200 30 320 80" fill="#C49464"/><rect fill="#1E6091" x="150" y="140" width="100" height="60" rx="5"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#fff">میدان نقش جهان</text></svg>`},
+{name:'آرامگاه حافظ - شیراز',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#7FB069" y="200" width="400" height="100"/><rect fill="#E8E8E8" x="140" y="100" width="120" height="100" rx="5"/><path d="M140 100 Q200 40 260 100" fill="#D0D0D0"/><rect fill="#C9A76A" x="170" y="150" width="60" height="50" rx="3"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#333">آرامگاه حافظ</text></svg>`},
+{name:'کاخ گلستان - تهران',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#D4A574" y="180" width="400" height="120"/><rect fill="#E8D5B7" x="100" y="80" width="200" height="100" rx="5"/><rect fill="#C9A76A" x="130" y="110" width="40" height="70"/><rect fill="#C9A76A" x="180" y="110" width="40" height="70"/><rect fill="#C9A76A" x="230" y="110" width="40" height="70"/><path d="M100 80 L200 30 L300 80" fill="#B8955A"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#333">کاخ گلستان</text></svg>`},
+{name:'گنبد قابوس - گلستان',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#8FB86B" y="220" width="400" height="80"/><rect fill="#D4A574" x="160" y="120" width="80" height="100"/><path d="M160 120 Q200 20 240 120" fill="#C49464"/><rect fill="#A8854A" x="180" y="60" width="40" height="40" rx="3"/><text x="200" y="280" text-anchor="middle" font-size="16" fill="#fff">گنبد قابوس</text></svg>`},
+{name:'پل خواجو - اصفهان',svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect fill="#87CEEB" width="400" height="300"/><rect fill="#2E86AB" y="190" width="400" height="110"/><rect fill="#D4A574" x="30" y="150" width="340" height="40"/><g fill="#B88454">${[0,1,2,3,4].map(i=>`<rect x="${60+i*60}" y="140" width="30" height="30" rx="5"/>`).join('')}</g><text x="200" y="285" text-anchor="middle" font-size="16" fill="#fff">پل خواجو</text></svg>`}
+];
+const bad=/ابر و باد|هفت شهر|سعدیا|ساقیا/;
+const POEMS2=[...new Map(POEMS.filter(p=>!bad.test(p.line)).map(p=>[p.line,p])).values()].map(p=>({t:p.line,a:p.ans}));
+const PANTO=['پدر در حال تعمیر ماشین','مادر در حال پیدا کردن شارژر','وقتی غذا سوخته','گربه‌ای که از حمام می‌ترسد','پدربزرگ در حال یاد گرفتن اینستاگرام','مامور پلیس در حال نوشتن جریمه','کسی که روی یخ لیز خورده','خریدار در حال چانه زدن','راننده تاکسی در ترافیک','کسی که در آسانسور گیر کرده','مادربزرگ در حال پختن آش',
+'عروس‌خانم موقع دیدن قیمت تالار','دایی که فکر می‌کند از سرمربی تیم ملی بهتر می‌فهمد','وقتی مهمان‌ها یک ساعت زودتر رسیدند','کسی که ساعت ۳ شب یخچال را باز کرده','وقتی وای‌فای قطع شد','پدری که مسئله‌ی ریاضی کلاس چهارم بچه را نمی‌تواند حل کند','گربه‌ای که لیوان را از روی میز می‌اندازد و خونسرد نگاهت می‌کند','مجری اخبار ساعت ۲۰:۳۰','ربات در حال تمام شدن باتری','فضانوردی که روی ماه آنتن موبایل ندارد','پنگوئنی که در تهران گرما زده','کسی که در سینما با صدای بلند پاپ‌کورن می‌خورد','کسی که چمدان پر از سوغاتی را می‌بندد','مادری که با بشقاب غذا دنبال بچه می‌دود','عروسی که با کفش پاشنه‌بلند روی سنگ‌فرش راه می‌رود','کوهنوردی که فهمید قله هنوز دو ساعت راه است','اولین بار سوار اسکیت شدن','شیری که از موش می‌ترسد','وقتی فهمیدی تو مهمانی تنها کسی هستی که لباس رسمی نپوشیده','ماهی‌ای که دارد از تنگ فرار می‌کند','بابا در حال بستن کمربند بعد از غذای عروسی','کسی که سعی می‌کند آخرین تکه‌ی کباب را بدون اینکه کسی بفهمد بردارد','دوچرخه‌سواری که ترمزش بریده','مجسمه‌ای که دارد گیر کردن مگس روی دماغش را تحمل می‌کند','وقتی داری کیک تولد را می‌بری و همه فیلم می‌گیرند'].map(t=>({t}));
+const MIMIC=[
+{t:'🤖 رباتِ مترو: «ایستگاه بعدی… تکرار می‌کنم… ایستگاه بعدی»'},{t:'📻 گوینده‌ی رادیو قدیمی: «ساعت سیزده و سی دقیقه»'},{t:'👵 مادربزرگ: «قربونت برم، کجا بودی تا الان؟!»'},
+{t:'🧔 بابا وقتی قبض برق را دید: «کی چراغ‌ها را روشن گذاشته؟!»'},{t:'⚽ گزارشگر فوتبال: «گوووووووول!»'},{t:'🎬 کارگردان هالیوودی: «اکشن! … کات! دوباره!»'},
+{t:'🦹 دارث ویدر: «لوک… من پدرتم»'},{t:'🤖 ترمیناتور: «برمی‌گردم»'},{t:'🧙‍♂️ جادوگر: «تو نمی‌توانی عبور کنی!»'},{t:'🍼 بچه‌ی ۳ ساله وقتی شکلات نمی‌دهند'},
+{t:'📣 تیزر تبلیغاتی: «فقط و فقط تا پایان هفته!»'},{t:'🐱 گربه‌ای که داد می‌زند: «غذا کو؟»'},{t:'✈️ خلبان: «مسافران محترم، کمربند ایمنی را ببندید»'},
+{t:'🎤 خواننده‌ای که وسط کنسرت متن آهنگ یادش رفته'},{t:'👨‍🏫 معلم ریاضی: «بچه‌ها حواستون این‌جا باشه!»'},{t:'🍉 فروشنده‌ی دوره‌گرد: «هندوانه‌ی قندی، شیرین‌تر از عسل!»'}];
+const FORB=[['آب',['مایع','بی‌رنگ','نوشیدنی']],['خورشید',['آسمان','گرما','ستاره']],['گربه',['حیوان','میو','موش']],['کتاب',['خواندن','صفحه','قلم']],['ماشین',['چرخ','راننده','جاده']],['دریا',['آب','موج','ماهی']],['پدر',['مرد','خانواده','بچه']],['مدرسه',['معلم','کلاس','درس']],['باران',['آب','آسمان','چتر']],
+['پیتزا',['پنیر','ایتالیا','نان']],['موبایل',['تماس','گوشی','صفحه']],['عروسی',['عروس','داماد','جشن']],['یخچال',['سرد','غذا','آشپزخانه']],['تلویزیون',['برنامه','فیلم','کانال']],['شیر',['جنگل','پادشاه','حیوان']],['چای',['استکان','داغ','قند']],['تولد',['کیک','شمع','سال']],['دندانپزشک',['دندان','درد','دکتر']]].map(([t,f])=>({t,f,fl:'🚫 کلمات ممنوع:'}));
+const LIAR=['غذای مورد علاقه‌ات','بدترین اتفاق سفر','یک خاطره از بچگی','شغل‌های رویایی‌ات','یک ترس عجیب','یک رکورد خنده‌دار که زده‌ای','اولین گوشی‌ات','یک اتفاق بامزه در مدرسه','یه مهارت پنهان که کسی نمی‌داند','حیوان‌هایی که ازشان فرار کرده‌ای'].map(x=>({t:'سه جمله درباره‌ی «'+x+'» بگو: ۲ تا راست، ۱ تا دروغ!'}));
+const DARE=['۱۰ ثانیه جدی به چشم‌های نفر کناری نگاه کن بدون خندیدن 😐','با دماغت اسم خودت را در هوا بنویس','مثل مرغ عشق آواز بخوان 🐦','تبلیغ یک «کلید قدیمی» را مثل مجری تلویزیون اجرا کن 📺','یک جمله‌ی بلند را از آخر به اول بخوان 🔁','تا نوبت بعدی با لهجه‌ی عجیب حرف بزن 🗣️','با چشم‌بند یک گربه بکش؛ تیمت حدس بزند 🐱','سلفی گروهی: همه چشم‌بسته و زبان بیرون 🤪','خبر «امروز در خانه‌ی ما چه گذشت» را مثل گوینده‌ی اخبار بخوان','مثل ربات راه برو و حرف بزن 🤖','یک ضرب‌المثل را فقط با ادا نشان بده','از یک نفر تیم مقابل تعریف خیلی اغراق‌آمیز بکن 🥹'].map(t=>({t}));
+const STORY=[['یک شب که همه خواب بودند، ناگهان…',['قورباغه','چای','فضانورد']],['پدربزرگ تصمیم گرفت…',['موشک','سبزی‌پلو','مدیر بانک']],['در عروسی عمو…',['اژدها','پیتزا','کفش']],['روزی روزگاری در تهران…',['دایناسور','ترافیک','ماست']],['وقتی گربه‌ی همسایه…',['پلیس','کیک','تلسکوپ']],['در یک آشپزخانه‌ی جادویی…',['جن','قابلمه','فوتبال']]].map(([t,f])=>({t,f,fl:'✨ کلمات اجباری:',fc:'#54e6a5'}));
+const EMOJI=[['🦁👑🌅',['شیرشاه','سیمبا','مادگاسکار','جنگل'],0],['🧊👸⛄',['یخ‌زده','مولان','شرک','رپونزل'],0],['🚢💑🧊',['تایتانیک','آواتار','پوسایدون','جاده‌ی انقلاب'],0],['🐠🔍🐟',['در جستجوی نمو','شرک','پوکمون','ماهی‌ها'],0],['🏠🎈👴',['بالا (Up)','قلعه‌ی متحرک','کوکو','وال‌ای'],0],['🦖🏝️🏃',['پارک ژوراسیک','کینگ‌کنگ','گودزیلا','عصر یخبندان'],0],['🐼🥋🍜',['کونگ‌فو پاندا','مولان','نینجا لاک‌پشت‌ها','رنگو'],0],['🧙‍♂️💍🌋',['ارباب حلقه‌ها','هری پاتر','نارنیا','جومانجی'],0],['🤖❤️🗑️',['وال‌ای','ترمیناتور','ترانسفورمرز','آیرون‌جاینت'],0],['⚡👓🧹',['هری پاتر','سوپرمن','جادوگر شهر اوز','دکتر استرنج'],0],['🕷️🕸️🧑',['مرد عنکبوتی','بتمن','مرد مورچه‌ای','آیرون من'],0],['🍔🦀🧽',['باب اسفنجی','پو','تام و جری','دورا'],0]].map(([e,o,a])=>({q:'این ایموجی‌ها کدام فیلم/کارتون است؟  '+e,opts:o,a}));
+const WH=[{e:'🎉',l:'+۵۰ امتیاز',s:50},{e:'😱',l:'-۲۰ امتیاز',s:-20},{e:'✨',l:'+۳۰ امتیاز',s:30},{e:'🔄',l:'جابه‌جایی امتیازها!',w:1},
+{e:'🐔',l:'۱۰ ثانیه قدقد کنید! (+۲۵)',s:25,f:1},{e:'💃',l:'۱۰ ثانیه برقصید! (+۲۰)',s:20,f:1},{e:'🎁',l:'هدیه: +۱۵ برای تیم مقابل',g:15},
+{e:'🐒',l:'۱۰ ثانیه مثل میمون راه بروید و جیغ بزنید! (+۲۵)',s:25,f:1},{e:'🎤',l:'یک نفر یک بیت آهنگ را با تمام صدا بخواند! (+۲۵)',s:25,f:1},
+{e:'🥶',l:'مجسمه‌ی یخی! ۱۵ ثانیه بی‌حرکت بمانید، تیم مقابل قلقلک نمی‌دهد 😅 (+۲۰)',s:20,f:1},{e:'💸',l:'مالیات! ۱۰ امتیاز به تیم مقابل بدهید',s:-10,g:10},{e:'🎲',l:'شانس دوباره! یک بار دیگر بچرخانید',again:1}];
+const WC=['#5ce5d7','#ffca66','#ff6b91','#9b7bff','#54e6a5','#ff9a5c','#5cb5ff','#f06bd6','#b5e655','#ff7a7a','#6bd0ff','#c49bff'];
+
+const T=(c,q,r,a,b,d,w)=>({q:c+' '+q,opts:[r,a,b,d],a:0,why:w||''});
+const TRIVIA=[
+T('🌍','پایتخت استرالیا کدام شهر است؟','کانبرا','سیدنی','ملبورن','پرت','سیدنی و ملبورن بزرگ‌ترند، ولی پایتخت کانبراست!'),
+T('🌍','پایتخت کانادا کدام شهر است؟','اتاوا','تورنتو','ونکوور','مونترال','تورنتو بزرگ‌ترین شهر است، نه پایتخت.'),
+T('🌍','بلندترین قله‌ی ایران کدام است؟','دماوند','دنا','علم‌کوه','سبلان','دماوند با حدود ۵۶۰۰ متر، بلندترین آتشفشان خاورمیانه هم هست.'),
+T('🌍','بزرگ‌ترین دریاچه‌ی جهان کدام است؟','خزر','سوپریور','ویکتوریا','ارومیه','دریای خزر از نظر مساحت بزرگ‌ترین دریاچه‌ی جهان است.'),
+T('🌍','بلندترین آبشار جهان کجاست؟','آنجل (ونزوئلا)','نیاگارا','ایگوازو','ویکتوریا','آبشار آنجل حدود ۹۷۹ متر ارتفاع دارد.'),
+T('🌍','بزرگ‌ترین جزیره‌ی ایران کدام است؟','قشم','کیش','هرمز','خارک'),
+T('🌍','سی‌وسه‌پل اصفهان روی کدام رود ساخته شده؟','زاینده‌رود','کارون','کرج','ارس'),
+T('🌍','گنبد قابوس در کدام استان است؟','گلستان','مازندران','گیلان','خراسان رضوی'),
+T('🌍','کدام کشور شکل «چکمه» است؟','ایتالیا','اسپانیا','یونان','ژاپن'),
+T('🌍','کوچک‌ترین کشور جهان کدام است؟','واتیکان','موناکو','سان‌مارینو','لیختن‌اشتاین','واتیکان کم‌تر از نیم کیلومتر مربع مساحت دارد.'),
+T('🌍','کدام قاره هیچ کشوری ندارد؟','جنوبگان (قطب جنوب)','استرالیا','آفریقا','اروپا'),
+T('🌍','کدام تنگه، خلیج فارس را به دریای عمان وصل می‌کند؟','هرمز','باب‌المندب','بسفر','جبل‌الطارق'),
+T('🌍','بزرگ‌ترین صحرای گرم جهان کدام است؟','صحرای بزرگ آفریقا','کالاهاری','لوت','گبی'),
+T('🌍','کدام کشور بیشترین جمعیت جهان را دارد؟','هند','چین','آمریکا','اندونزی','هند در سال‌های اخیر از چین جلو زده است.'),
+T('🔬','انسان بالغ چند استخوان دارد؟','۲۰۶','۱۸۰','۲۵۰','۳۰۰','نوزادها حدود ۳۰۰ استخوان دارند که بعداً به هم جوش می‌خورند.'),
+T('🔬','قلب انسان در یک شبانه‌روز حدوداً چند بار می‌تپد؟','حدود ۱۰۰ هزار بار','حدود ۱۰ هزار بار','حدود ۱ میلیون بار','حدود ۵ میلیون بار'),
+T('🔬','بیشترین گاز جو زمین کدام است؟','نیتروژن','اکسیژن','دی‌اکسید کربن','آرگون','نیتروژن حدود ۷۸٪ هواست؛ اکسیژن حدود ۲۱٪.'),
+T('🔬','کدام فلز در دمای اتاق مایع است؟','جیوه','سرب','مس','آلومینیوم'),
+T('🔬','نماد شیمیایی «Au» برای کدام عنصر است؟','طلا','نقره','آلومینیوم','آهن'),
+T('🔬','سریع‌ترین جانور خشکی کدام است؟','یوزپلنگ','شیر','اسب','آهو','یوزپلنگ تا حدود ۱۰۰ کیلومتر بر ساعت می‌دود.'),
+T('🔬','نور خورشید حدوداً چقدر طول می‌کشد تا به زمین برسد؟','حدود ۸ دقیقه','حدود ۸ ثانیه','حدود ۸ ساعت','حدود ۸ روز'),
+T('🔬','کوچک‌ترین سیاره‌ی منظومه‌ی شمسی کدام است؟','عطارد','مریخ','زهره','زمین'),
+T('🔬','عنکبوت چند پا دارد؟','۸','۶','۱۰','۱۲','حشره‌ها ۶ پا دارند، عنکبوت‌ها ۸ پا.'),
+T('🔬','هشت‌پا چند قلب دارد؟','۳','۱','۲','۴','دو قلب برای آبشش‌ها و یکی برای بدن!'),
+T('🔬','کدام غذا تقریباً هرگز فاسد نمی‌شود؟','عسل','شیر','پنیر','نان'),
+T('🔬','سریع‌ترین گیاه در رشد کدام است؟','بامبو','کاکتوس','بلوط','نخل'),
+T('🔬','حدوداً چند درصد بدن انسان را آب تشکیل می‌دهد؟','حدود ۶۰٪','حدود ۲۰٪','حدود ۴۰٪','حدود ۹۰٪'),
+T('🔬','بدن در برابر نور خورشید کدام ویتامین را می‌سازد؟','D','C','B12','A'),
+T('🔬','کدام پرنده نیست؟','خفاش','پنگوئن','کیوی','شترمرغ','خفاش پستاندار است و تنها پستاندار پروازکننده.'),
+T('🔬','کدام حیوان تخم‌گذار است؟','پنگوئن','دلفین','خفاش','کانگورو'),
+T('🔬','مجموع زاویه‌های داخلی هر مثلث چند درجه است؟','۱۸۰','۹۰','۲۷۰','۳۶۰'),
+T('📜','«شاهنامه» اثر کدام شاعر است؟','فردوسی','حافظ','سعدی','مولانا','شاهنامه حدوداً ۵۰ هزار بیت دارد و حدود ۳۰ سال طول کشید.'),
+T('📜','«گلستان» و «بوستان» اثر کیست؟','سعدی','حافظ','نظامی','خیام'),
+T('📜','«رودکی» شاعر کدام دوره است؟','سامانی','ساسانی','صفوی','قاجار','رودکی را پدر شعر فارسی می‌نامند.'),
+T('📜','ابوعلی سینا در کدام شهر آرمیده است؟','همدان','بخارا','اصفهان','شیراز'),
+T('📜','کتاب «قانون در طب» اثر کیست؟','ابن‌سینا','رازی','بیرونی','خوارزمی'),
+T('📜','چهارشنبه‌سوری در کدام شب برگزار می‌شود؟','آخرین سه‌شنبه‌شبِ سال','اولین جمعه‌ی سال','سیزدهم فروردین','شب یلدا'),
+T('📜','شب یلدا بین کدام دو روز است؟','۳۰ آذر و ۱ دی','۱ آبان و ۲ آبان','۱۵ بهمن و ۱۶ بهمن','۱ فروردین و ۲ فروردین','یلدا بلندترین شب سال است.'),
+T('📜','کدام یک جزو «هفت‌سین» نیست؟','ماهی','سنجد','سکه','سماق','ماهی قرمز زینت سفره است، ولی با «س» شروع نمی‌شود.'),
+T('📜','رمان «بوف کور» اثر کیست؟','صادق هدایت','جلال آل‌احمد','بزرگ علوی','صادق چوبک'),
+T('📜','نخستین ایرانی برنده‌ی جایزه‌ی صلح نوبل چه کسی است؟','شیرین عبادی','مریم میرزاخانی','پروین اعتصامی','فروغ فرخزاد','شیرین عبادی در سال ۲۰۰۳ این جایزه را گرفت.'),
+T('📜','مریم میرزاخانی برنده‌ی کدام جایزه شد؟','مدال فیلدز','نوبل فیزیک','نوبل شیمی','جایزه‌ی اسکار','مدال فیلدز بزرگ‌ترین جایزه‌ی ریاضی است.'),
+T('📜','کدام ساز ایرانی شش سیم دارد و «تار» نام دارد؟','تار','سنتور','کمانچه','دف','تار شاهکار ساز‌های سنتی ایرانی است.'),
+T('📜','اولین ماه پاییز در تقویم ایرانی چیست؟','مهر','شهریور','آبان','آذر'),
+T('🎬','قهرمان جام جهانی فوتبال ۲۰۲۲ کدام کشور شد؟','آرژانتین','فرانسه','برزیل','کرواسی','فینال بین آرژانتین و فرانسه بود و در ضربات پنالتی تمام شد.'),
+T('🎬','جام جهانی ۲۰۲۲ در کدام کشور برگزار شد؟','قطر','روسیه','برزیل','آفریقای جنوبی'),
+T('🎬','در بازی شطرنج هر بازیکن در ابتدا چند مهره دارد؟','۱۶','۱۲','۲۰','۳۲'),
+T('🎬','حلقه‌های پرچم المپیک چند تا هستند؟','۵','۴','۶','۷','پنج حلقه نماد پنج قاره‌اند.'),
+T('🎬','در کدام ورزش از «شاتل» استفاده می‌شود؟','بدمینتون','تنیس','والیبال','اسکواش'),
+T('🎬','نخستین المپیک مدرن در کدام شهر برگزار شد؟','آتن','پاریس','لندن','رم','سال ۱۸۹۶ بود.'),
+T('🎬','«سمفونی نهم» اثر کدام آهنگساز است؟','بتهوون','موتزارت','باخ','شوپن'),
+T('🎬','تابلوی «شب پرستاره» اثر کدام نقاش است؟','ونگوگ','پیکاسو','مونه','دالی'),
+T('🎬','نویسنده‌ی «هری پاتر» کیست؟','جی. کی. رولینگ','تالکین','سی. اس. لوئیس','رولد دال'),
+T('🎬','«جنگ و صلح» اثر کدام نویسنده است؟','تولستوی','داستایفسکی','چخوف','گورکی'),
+T('🎬','«شازده کوچولو» نوشته‌ی کیست؟','آنتوان دو سنت‌اگزوپری','ویکتور هوگو','ژول ورن','آلبر کامو'),
+T('🎬','«بینوایان» اثر کدام نویسنده است؟','ویکتور هوگو','بالزاک','ژول ورن','الکساندر دوما'),
+T('🎬','شخصیت «ماریو» ساخته‌ی کدام شرکت است؟','نینتندو','سگا','سونی','مایکروسافت'),
+T('🎬','باب‌اسفنجی در کدام شهر زندگی می‌کند؟','بیکینی‌باتم','آتلانتیس','اقیانوس‌شهر','کورال‌بی'),
+T('🍽️','فسنجان با کدام مواد اصلی پخته می‌شود؟','گردو و رب انار','بادام و سیب','پسته و لیمو','کنجد و عسل'),
+T('🍽️','ماده‌ی اصلی «سمنو» چیست؟','جوانه‌ی گندم','برنج','نخود','عدس'),
+T('🍽️','بیشترین زعفران جهان در کدام کشور تولید می‌شود؟','ایران','اسپانیا','هند','مراکش','ایران حدود ۹۰٪ زعفران جهان را تولید می‌کند.'),
+T('🍽️','پسته‌ی معروف ایران بیشتر از کدام شهر است؟','رفسنجان','سمنان','یزد','بوشهر'),
+T('🍽️','«سوهان» سوغات کدام شهر است؟','قم','اصفهان','یزد','تبریز'),
+T('🍽️','«گز» سوغات معروف کدام شهر است؟','اصفهان','قم','شیراز','رشت'),
+T('🍽️','چای لاهیجان از کدام استان است؟','گیلان','مازندران','گلستان','اردبیل')
+];
+POEMS2.forEach(p=>p.a=p.a.replace(/^از درون/,'وز درون'));
+POEMS2.push(...[['هر که نامخت از گذشت روزگار','نیز ناموزد ز هیچ آموزگار'],['ای که دستت می‌رسد کاری بکن','پیش از آن کز تو نیاید هیچ کار'],['یکی قطره باران ز ابری چکید','خجل شد چو پهنای دریا بدید'],['برگ درختان سبز در نظر هوشیار','هر ورقش دفتری است معرفت کردگار'],['دوست آن باشد که گیرد دست دوست','در پریشان‌حالی و درماندگی'],['بیا تا گل برافشانیم و می در ساغر اندازیم','فلک را سقف بشکافیم و طرحی نو دراندازیم'],['الا یا ایها الساقی ادر کأسا و ناولها','که عشق آسان نمود اول ولی افتاد مشکل‌ها']].map(([t,a])=>({t,a})));
+PANTO.push(...['وزنه‌برداری که وزنه از دستش افتاد','سرآشپزی که نمک را با شکر اشتباه گرفته','کسی که وسط جلسه‌ی مهم عطسه‌اش گرفته','مسافری که کیفش را در تاکسی جا گذاشته','تماشای فیلم ترسناک در تاریکی','کسی که می‌خواهد بی‌سروصدا از اتاق بچه‌ی خوابیده بیرون برود','پیک موتوری که سگ دنبالش افتاده','کسی که تازه فهمیده امروز تعطیل نبوده','نگهبان موزه‌ای که خوابش برده','پیرمردی که دنبال عینک است ولی روی سرش است','دانش‌آموزی که تکلیف ننوشته و معلم دارد می‌آید','کسی که روی تردمیل می‌دود و پشیمان است','پدری که از پشت‌بام آنتن تلویزیون را تنظیم می‌کند','بچه‌ای که می‌خواهد شکلات را قایم کند','دستفروشی که پلیس را دیده'].map(t=>({t})));
+FORB.push(...[['فوتبال',['توپ','گل','تیم']],['قهوه',['فنجان','کافه','تلخ']],['بستنی',['سرد','شیرین','قیف']],['هواپیما',['پرواز','بال','فرودگاه']],['ساعت',['زمان','عقربه','مچ']],['درخت',['برگ','سبز','چوب']],['پلیس',['قانون','جریمه','دزد']],['استخر',['شنا','آب','مایو']],['کوه',['صعود','قله','بلند']],['دوچرخه',['پدال','چرخ','ترمز']],['آینه',['صورت','شیشه','انعکاس']],['خواب',['شب','تخت','رویا']],['پیاز',['اشک','آشپزی','پوست']],['سفر',['چمدان','مقصد','مسافر']]].map(([t,f])=>({t,f,fl:'🚫 کلمات ممنوع:'})));
+EMOJI.push(...[['🧞‍♂️🪔🐒','علاءالدین',['علاءالدین','سیندرلا','موگلی','پینوکیو']],['🐻🍯🎈','وینی پو',['وینی پو','یوگی بر','پدینگتون','کونگ‌فو پاندا']],['🐘🎪✈️','دامبو',['دامبو','ماداگاسکار','کینگ‌کنگ','شرک']],['🧸🤠🚀','داستان اسباب‌بازی',['داستان اسباب‌بازی','شرک','ماشین‌ها','سیندرلا']],['🧜‍♀️🐠🌊','پری دریایی',['پری دریایی','موانا','یخ‌زده','پینوکیو']],['🥷🐢🍕','لاک‌پشت‌های نینجا',['لاک‌پشت‌های نینجا','مولان','نمو','ویلی ونکا']],['🔨⚡👱','ثور',['ثور','سوپرمن','هالک','آیرون من']],['🐺👵🧺🔴','شنل قرمزی',['شنل قرمزی','سفیدبرفی','هانسل و گرتل','سیندرلا']],['🍎🪞🧙‍♀️','سفیدبرفی',['سفیدبرفی','سیندرلا','رپونزل','زیبای خفته']],['🚗⚡🏁','ماشین‌ها (Cars)',['ماشین‌ها (Cars)','شرک','مادگاسکار','یخ‌زده']],['🦸‍♂️🛡️⭐','کاپیتان آمریکا',['کاپیتان آمریکا','سوپرمن','بتمن','ثور']],['🐒👑🏙️','کینگ‌کنگ',['کینگ‌کنگ','سیندرلا','موگلی','طارزان']]].map(([e,w,o])=>({q:'این ایموجی‌ها کدام فیلم/کارتون است؟  '+e,opts:o,a:o.indexOf(w)})));
+DARE.push(...['مثل مجری آشپزی، یک غذای خیالی را معرفی کن 🍳','۱۰ ثانیه مثل میمون راه برو 🐒','با حالت گریه بگو: «چای من سرد شد!» 😭','مثل مجسمه‌ی زنده بی‌حرکت بمان تا ۱۰ بشمارند 🗿','داستان زندگی یک سیب‌زمینی را تعریف کن 🥔','از یک نفر مصاحبه‌ی کاملاً بی‌ربط بگیر 🎤','با لحن عاشقانه به یک خیار پیشنهاد ازدواج بده 🥒','یک ضرب‌المثل را رپ بخوان 🎶','مثل ماهی در هوا شنا کن 🐟','سخنرانی ۱۰ ثانیه‌ای تشکر بعد از بردن اسکار! 🏆'].map(t=>({t})));
+const R=(q,r,a,b,d,w)=>({q,opts:[r,a,b,d],a:0,why:w||''});
+const RIDDLE=[
+R('🏭 ۵ ماشین در ۵ دقیقه ۵ قطعه می‌سازند. ۱۰۰ ماشین برای ساختن ۱۰۰ قطعه چند دقیقه لازم دارند؟','۵ دقیقه','۱۰۰ دقیقه','۲۰ دقیقه','۱ دقیقه','هر ماشین در ۵ دقیقه یک قطعه می‌سازد؛ پس ۱۰۰ ماشین هم در ۵ دقیقه ۱۰۰ قطعه می‌سازند.'),
+R('🎾 راکت و توپ روی‌هم ۱۱۰ تومان‌اند و راکت ۱۰۰ تومان از توپ گران‌تر است. توپ چند تومان است؟','۵ تومان','۱۰ تومان','۱۵ تومان','۲۰ تومان','توپ ۵ و راکت ۱۰۵ تومان است؛ جمع = ۱۱۰ و اختلاف = ۱۰۰.'),
+R('🔢 عدد بعدی چیست؟  ۲ ، ۶ ، ۱۲ ، ۲۰ ، ؟','۳۰','۲۴','۲۸','۳۶','عددها حاصل‌ضرب دو عدد متوالی‌اند: ۱×۲، ۲×۳، ۳×۴، ۴×۵، پس ۵×۶ = ۳۰.'),
+R('🔢 عدد بعدی چیست؟  ۱ ، ۱ ، ۲ ، ۳ ، ۵ ، ۸ ، ؟','۱۳','۱۰','۱۱','۱۲','دنباله‌ی فیبوناچی: هر عدد جمع دو عدد قبلی است (۵+۸=۱۳).'),
+R('🔢 عدد بعدی چیست؟  ۱ ، ۴ ، ۹ ، ۱۶ ، ؟','۲۵','۲۰','۳۰','۳۶','مجذور عددهای ۱ تا ۴؛ بعدی ۵×۵ = ۲۵.'),
+R('➕ حاصل  ۲ + ۲×۲ + ۲÷۲  چند است؟','۷','۶','۸','۹','اول ضرب و تقسیم: ۲ + ۴ + ۱ = ۷.'),
+R('➕ حاصل  ۷ + ۷÷۷ + ۷×۷ − ۷  چند است؟','۵۰','۴۳','۵۷','۶۴','۷ + ۱ + ۴۹ − ۷ = ۵۰.'),
+R('➗ حاصل  ۲۴ ÷ ۶ × ۲  چند است؟','۸','۲','۴','۱۲','ضرب و تقسیم از چپ به راست: ۲۴÷۶ = ۴ و بعد ۴×۲ = ۸.'),
+R('🧮 حاصل  ۹۹ × ۹۹  چند است؟','۹۸۰۱','۹۸۱۱','۹۰۰۱','۹۷۰۱','(۱۰۰−۱)² = ۱۰۰۰۰ − ۲۰۰ + ۱ = ۹۸۰۱.'),
+R('🧮 حاصل  ۱۲۳۴۵۶۷۹ × ۹  چیست؟ (به‌جای ۸ نگاه کنید!)','۱۱۱۱۱۱۱۱۱','۱۲۳۴۵۶۷۸۹','۹۹۹۹۹۹۹۹۹','۱۰۰۰۰۰۰۰۰۰','نتیجه‌ی جالب: نُه تا یک!'),
+R('🧒 پدری ۳۰ سال از پسرش بزرگ‌تر است. ۵ سال دیگر سن پدر ۴ برابر سن پسر می‌شود. پسر الان چند ساله است؟','۵ ساله','۴ ساله','۶ ساله','۱۰ ساله','الان پسر ۵ و پدر ۳۵؛ ۵ سال بعد ۱۰ و ۴۰ که ۴ برابر است.'),
+R('🕰️ ساعتی ۳ ضربه را در ۶ ثانیه می‌زند. ۹ ضربه را در چند ثانیه می‌زند؟','۲۴ ثانیه','۱۸ ثانیه','۲۷ ثانیه','۳۰ ثانیه','فاصله‌ی بین ضربه‌ها ۳ ثانیه است و بین ۹ ضربه ۸ فاصله هست: ۸×۳ = ۲۴.'),
+R('🕰️ ساعت ۳:۱۵ زاویه‌ی بین دو عقربه چند درجه است؟','۷٫۵ درجه','۰ درجه','۱۵ درجه','۳۰ درجه','عقربه‌ی دقیقه‌شمار روی ۹۰° و ساعت‌شمار روی ۹۷٫۵° است.'),
+R('➕ مجموع عددهای ۱ تا ۱۰۰ چند است؟','۵۰۵۰','۵۰۰۰','۵۱۰۰','۴۹۵۰','۵۰ جفت «۱+۱۰۰، ۲+۹۹، …» که هر جفت ۱۰۱ است (ترفند گاوس).'),
+R('🔟 بین ۱ تا ۱۰۰، رقم ۹ روی‌هم چند بار نوشته می‌شود؟','۲۰ بار','۱۰ بار','۱۱ بار','۱۹ بار','۱۰ بار در یکان و ۱۰ بار در دهگان؛ عدد ۹۹ دو بار حساب می‌شود.'),
+R('🎯 کدام سه عدد صحیح مثبت متمایز جمعشان با حاصل‌ضربشان برابر است؟','۱ و ۲ و ۳','۱ و ۲ و ۴','۲ و ۳ و ۴','۱ و ۳ و ۵','۱+۲+۳ = ۶ = ۱×۲×۳.'),
+R('🔢 سه عدد متوالی که جمعشان ۴۵ باشد کدام‌اند؟','۱۴ و ۱۵ و ۱۶','۱۳ و ۱۴ و ۱۵','۱۵ و ۱۶ و ۱۷','۱۲ و ۱۵ و ۱۸','عدد وسط برابر ۴۵÷۳ = ۱۵ است.'),
+R('🔢 عدد ۱۰۰ چند مقسوم‌علیه (شمارنده) مثبت دارد؟','۹ تا','۶ تا','۸ تا','۱۰ تا','۱، ۲، ۴، ۵، ۱۰، ۲۰، ۲۵، ۵۰، ۱۰۰.'),
+R('🔶 در یک جدول ۳×۳ چند مربع (از همه اندازه‌ها) می‌توان دید؟','۱۴ تا','۹ تا','۱۰ تا','۱۶ تا','۹ مربع کوچک + ۴ مربع ۲×۲ + ۱ مربع بزرگ = ۱۴.'),
+R('🤝 ۵ نفر وارد اتاقی می‌شوند و هر نفر با هر یک از بقیه فقط یک‌بار دست می‌دهد. چند دست‌دادن انجام می‌شود؟','۱۰','۵','۱۵','۲۰','فرمول: ۵×۴÷۲ = ۱۰.'),
+R('📅 اگر امروز جمعه باشد، ۱۰۰ روز بعد چه روزی است؟','یکشنبه','شنبه','دوشنبه','سه‌شنبه','۱۰۰ = ۱۴ هفته + ۲ روز؛ جمعه + ۲ = یکشنبه.'),
+R('🎬 دو پدر و دو پسر ۳ بلیت سینما خریدند و برای هرکدام بلیت بود. چطور؟','فقط ۳ نفر بودند: پدربزرگ، پدر و پسر','یک نفر مجانی وارد شد','بلیت‌ها دو‌نفره بود','یک نفر بیرون ماند','پدربزرگ هم پدر است و هم پدرِ پدر؛ پدر هم پدر است و هم پسر!'),
+R('⚖️ ۱ کیلو پر سنگین‌تر است یا ۱ کیلو آهن؟','هر دو مساوی‌اند','پر','آهن','بستگی به شکل دارد','هر دو یک کیلوگرم‌اند؛ فقط حجم پر بیشتر است.'),
+R('🍎 ۳ سیب دارید و ۲ تا برمی‌دارید. چند سیب دارید؟','۲ سیب','۱ سیب','۳ سیب','۵ سیب','همان ۲ تایی که برداشتید!'),
+R('🐑 چوپانی ۱۷ گوسفند دارد. همه جز ۹ تا می‌میرند. چند گوسفند زنده می‌ماند؟','۹','۸','۱۷','۰','«همه جز ۹ تا» یعنی ۹ تا زنده می‌ماند.'),
+R('📆 چند ماه از سال ۲۸ روز دارند؟','هر ۱۲ ماه','فقط ۱ ماه','۲ ماه','۶ ماه','هر ماه حداقل ۲۸ روز دارد!'),
+R('🤔 چیستان: چیزی که هرچه بیشتر از آن برداری، بزرگ‌تر می‌شود؟','چاله','کوه','دریا','سایه'),
+R('🤔 چیستان: چیزی که تا آن را ندهی، نمی‌توانی نگهش داری؟','قول','پول','کتاب','مداد'),
+R('🤔 چیستان: چیزی که هرچه خشک‌تر باشد، بیشتر خیس می‌کند؟','حوله','آفتاب','باد','نمک'),
+R('🤔 چیستان: چیزی که همیشه جلوی توست ولی نمی‌توانی ببینی‌اش؟','آینده','باد','هوا','سایه'),
+R('🤔 چیستان: بی‌دهان حرف می‌زنم و بی‌گوش می‌شنوم؛ من چیستم؟','پژواک (انعکاس صدا)','رادیو','موبایل','باد'),
+R('🤔 چیستان: پر از سوراخ است ولی آب نگه می‌دارد؟','اسفنج','الک','سبد','توری'),
+R('🤔 چیستان: هرچه بیشتر باشد، کمتر می‌بینی؟','تاریکی','دود','ابر','کوه'),
+R('🤔 چیستان: کلید دارد ولی در را باز نمی‌کند؟','پیانو','قفل','صندوق','گنج'),
+R('🤔 چیستان: دست دارد ولی نمی‌تواند دست بدهد؟','ساعت','درخت','رودخانه','کتاب','عقربه‌ها را دست می‌گویند.'),
+R('🤔 چیستان: پا دارد ولی راه نمی‌رود؟','میز','سایه','ماشین','باد'),
+R('🤔 چیستان: هرچه با آن بشویی، خودش کثیف‌تر می‌شود؟','آب','صابون','لباس','دست')
+];
+const SPEEDW=['شیر','فیل','مرغ','ماهی','پرواز','دوچرخه','پزشک','آشپز','خواب','دندان‌درد','کفش','چتر','موبایل','بوکس','شنا','فوتبال','گیتار','رقص','گریه','عطسه','سرما','گرما','قایق','قطار','موتور','دوربین','نقاش','معلم','پلیس','خلبان','فضانورد','ربات','دزد','سوپرمن','اسب‌سواری','طناب‌بازی','آتش‌نشان','سلفی','حمام','مسواک','آرایشگر','هندوانه','عروس','کشتی‌گیر','پنگوئن','میمون','مار','خرگوش','گربه','سگ','اردک','کانگورو','زرافه','خرس','بستنی','ماساژ','اسکی','تلفن','صبحانه'];
+/* ===== سؤال‌های کاربر (CSV) ===== */
+const TYPES={'مغزی':'trivia','معما':'riddle','ایموجی':'emoji','پانتومیم':'panto','سرعتی':'speed','ممنوع':'forb','چالش':'dare','شعر':'poem'};
+const TNAME={trivia:'مغزی',riddle:'معما',emoji:'ایموجی',panto:'پانتومیم',speed:'سرعتی',forb:'ممنوع',dare:'چالش',poem:'شعر'};
+const POOLS={trivia:TRIVIA,riddle:RIDDLE,emoji:EMOJI,panto:PANTO,speed:SPEEDW,forb:FORB,dare:DARE,poem:POEMS2},DEF={};
+for(const k in POOLS)DEF[k]=POOLS[k].slice();
+let UQ={};try{UQ=JSON.parse(localStorage.getItem('mc_uq'))||{}}catch(e){}
+const MAP={trivia:r=>({q:r.t,opts:r.c.filter(Boolean),a:0,why:r.w}),riddle:r=>({q:r.t,opts:r.c.filter(Boolean),a:0,why:r.w}),emoji:r=>({q:r.t,opts:r.c.filter(Boolean),a:0,why:r.w}),
+panto:r=>({t:r.t}),dare:r=>({t:r.t}),speed:r=>r.t,forb:r=>({t:r.t,f:r.c.filter(Boolean),fl:'🚫 کلمات ممنوع:'}),poem:r=>({t:r.t,a:r.c[0]})};
+function applyUQ(){for(const k in POOLS){const u=UQ[k]||[];POOLS[k].splice(0,POOLS[k].length,...(u.length?u.map(MAP[k]):DEF[k]))}}
+function parseCSV(t){t=t.replace(/^\ufeff/,'');const l=t.split('\n')[0],d=(l.match(/;/g)||[]).length>(l.match(/,/g)||[]).length?';':(l.includes('\t')&&!l.includes(',')?'\t':',');
+const rows=[];let r=[],c='',q=0;for(let i=0;i<t.length;i++){const h=t[i];
+if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=h}
+else if(h=='"')q=1;else if(h==d){r.push(c);c=''}else if(h=='\n'||h=='\r'){if(h=='\r'&&t[i+1]=='\n')i++;r.push(c);rows.push(r);r=[];c=''}else c+=h}
+if(c||r.length){r.push(c);rows.push(r)}return rows}
+function importQ(text,p=1){const rows=parseCSV(text),u={};let bad=0;
+rows.forEach(r=>{const k=TYPES[(r[0]||'').trim()];if(!k)return;const t=(r[1]||'').trim(),c=r.slice(2,6).map(x=>(x||'').trim()),w=(r[6]||'').trim();
+const mc=['trivia','riddle','emoji'].includes(k);
+if(!t||(mc&&c.filter(Boolean).length<2)||(k=='poem'&&!c[0])){bad++;return}(u[k]=u[k]||[]).push({t,c,w})});
+const n=Object.values(u).reduce((a,b)=>a+b.length,0);if(!n)return{n:0,bad};
+UQ=u;if(p){try{localStorage.setItem('mc_uq',JSON.stringify(UQ))}catch(e){}state.used={};save()}applyUQ();return{n,bad}}
+function tplCSV(){const R=[['نوع','متن سؤال','گزینه درست (همیشه این ستون)','گزینه غلط ۱','گزینه غلط ۲','گزینه غلط ۳','توضیح (اختیاری)'],
+['مغزی','پایتخت ایران کدام شهر است؟','تهران','اصفهان','شیراز','تبریز','تهران پایتخت ایران است'],
+['مغزی','عروسی دایی علی در کدام شهر بود؟','رشت','یزد','کرج','قزوین','نمونه‌ی سؤال خانوادگی'],
+['معما','چیزی که هرچه بیشتر برداری بزرگ‌تر می‌شود؟','چاله','کوه','دریا','سایه','چاله با برداشتن خاک بزرگ‌تر می‌شود'],
+['ایموجی','این ایموجی‌ها کدام فیلم است؟ 🦁👑','شیرشاه','شرک','مولان','پینوکیو',''],
+['پانتومیم','پدر در حال تعمیر ماشین','','','','',''],
+['سرعتی','دوچرخه','','','','',''],
+['ممنوع','خورشید','آسمان','گرما','ستاره','',' (در ستون‌های گزینه، کلمات ممنوع را بنویس)'],
+['چالش','مثل مرغ عشق آواز بخوان','','','','',''],
+['شعر','مصراع اول شعر','مصراع دوم شعر','','','','']];
+return '\ufeff'+R.map(r=>r.map(x=>'"'+x.replace(/"/g,'""')+'"').join(',')).join('\r\n')}
+applyUQ();
+/* ===== مراحل ===== */
+const STAGES=[
+{id:'trivia',n:'چالش مغزی',i:'🧠',turns:4,k:'mcq',time:30,pts:20,pool:TRIVIA,d:'سؤال اطلاعات عمومی! درست بزنید ۲۰ امتیاز بگیرید.'},
+{id:'panto',n:'پانتومیم',i:'🎭',turns:10,k:'card',secret:1,who:1,time:60,pts:30,pool:PANTO,bg:'linear-gradient(145deg,#6656f4,#2dd4bf)',ok:'حدس زدند',no:'نتوانستند',d:'اجراکننده روی کارت بزند و فقط ادا دربیاورد؛ حرف‌زدن ممنوع 🤐'},
+{id:'speed',n:'پانتومیم سرعتی',i:'⚡',turns:2,k:'speed',who:1,time:60,pts:15,bg:'linear-gradient(145deg,#ff6b91,#ffca66)',d:'هر تیم ۶۰ ثانیه وقت دارد! کلمه‌ها پشت‌سرهم می‌آید؛ هر کدام را تیم درست حدس بزند، کلمه‌ی بعدی. به ازای هر حدس درست ۱۵ امتیاز!'},
+{id:'poem',n:'شعر و ادب',i:'📜',turns:4,k:'card',time:30,pts:25,pool:POEMS2,cls:'poem-line',ok:'درست خواندند',no:'نتوانستند',d:'مصراع اول را می‌بینید؛ مصراع دوم را بگویید!',sub:'📜 مصراع دوم چیست؟'},
+{id:'img',n:'این کجاست؟ یا کیه؟',i:'🖼️',turns:4,k:'imgs',time:25,pts:30,pool:IMAGES.map(x=>({img:x.svg,a:x.name})),bg:'transparent',ok:'درست گفتند',no:'نتوانستند',d:'از روی عکس حدس بزنید این کجاست یا این چه کسی است! (عکس‌ها را در صفحه‌ی اول اضافه کنید)'},
+{id:'wheel',n:'چرخ شانس',i:'🎰',turns:4,k:'wheel',d:'هرچه شانس بیاورد! جایزه، مالیات، رقص، قدقد، میمون‌بازی و… 😈'},
+{id:'voice',n:'صدای کی بود؟',i:'🎧',turns:4,k:'voice',time:40,pts:35,bg:'linear-gradient(145deg,#ff8a95,#9b7bff)',ok:'تشخیص دادند',no:'نتوانستند',d:'یک صدای ضبط‌شده پخش می‌شود؛ حدس بزنید صدای کدام بازیگر یا خواننده است! (کلیپ‌ها را در صفحه‌ی اول اضافه کنید)'},
+{id:'forb',n:'کلمات ممنوع',i:'🚫',turns:4,k:'card',who:1,time:60,pts:30,bad:10,pool:FORB,bg:'linear-gradient(145deg,#5ce5d7,#6656f4)',ok:'درست توضیح داد',no:'کلمه‌ی ممنوع گفت',d:'کلمه را توضیح بده بدون گفتن کلمه‌های ممنوع!'},
+{id:'emoji',n:'ایموجی فیلم',i:'🎬',turns:4,k:'mcq',time:25,pts:25,pool:EMOJI,d:'فیلم یا کارتون را از روی ایموجی‌ها حدس بزنید.'},
+{id:'riddle',n:'معما و چیستان',i:'🧩',turns:4,k:'mcq',time:60,pts:50,pool:RIDDLE,d:'معما، چیستان و بازی ریاضی حرفه‌ای! سخت‌تر است و ۵۰ امتیاز دارد. با هم مشورت کنید 🤔'},
+{id:'dare',n:'چالش بامزه',i:'🤪',turns:4,k:'card',who:1,time:30,pts:25,pool:DARE,bg:'linear-gradient(145deg,#ff9a5c,#ff6b91)',ok:'انجام داد',no:'خجالت کشید',d:'کارت را بخوان و انجامش بده. خجالت ممنوع!'}];
+/* ===== وضعیت ===== */
+const KEY='mindclub_party_v3';
+const fresh=(p=[],u={})=>({phase:'setup',players:p,teams:[{name:'تیم آبی',score:0,members:[]},{name:'تیم قرمز',score:0,members:[]}],turn:0,stage:0,tis:0,intro:true,used:u,pi:[0,0]});
+let state=fresh();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.phase&&s.used)state=s}catch(e){}
+const GOOD=['آفرین نابغه‌ها! 🤩','ترکوندین! 🔥','شما کی هستید؟! 😎','دمتون گرم! 👏','یکی به این تیم جایزه بده! 🏅'],BAD=['ای بابا! 🙈','نزدیک بود… نبود 😅','مغزها رفتن استراحت 🧠💤','خنده‌دار بود ولی غلط 😂','اشکال نداره، دفعه‌ی بعد! 💪'];
+const cur=()=>STAGES[state.stage],team=()=>state.teams[state.turn];
+const performer=()=>{const m=team().members;return m.length?m[state.pi[state.turn]%m.length]:team().name};
+function pickIdx(id,n){const u=state.used[id]=state.used[id]||[];let a=[...Array(n).keys()].filter(i=>!u.includes(i));if(!a.length){u.length=0;a=[...Array(n).keys()]}const i=pick(a);u.push(i);return i}
+function nextTurn(){state.pi[state.turn]++;state.turn=1-state.turn;state.tis++;if(state.tis>=cur().turns)goNext();else{save();renderPlaying()}}
+function goNext(){stopTimer();stopAudio();state.stage++;state.tis=0;state.turn=state.stage%2;state.intro=true;if(state.stage>=STAGES.length)state.phase='finished';save();render()}
+const render=()=>state.phase==='setup'?renderSetup():state.phase==='playing'?renderPlaying():renderFinished();
+/* ===== صفحه‌ی شروع ===== */
+let rec=null,pend=null;
+function renderSetup(){
+app.innerHTML=`<div class="c" style="margin:10px 0 20px"><h1>باشگاه ذهن گروهی 🧠🎉</h1><p class="sub">۲ تیم • ${fa(STAGES.length)} مرحله • کلی خنده!</p><p class="sub" style="margin-top:6px">${srvMsg()}</p></div>
+<div class="card"><h2 style="font-size:1.3rem;margin-bottom:10px">👥 بازیکن‌ها</h2><div class="player-input"><input id="pname" placeholder="اسم بازیکن..." maxlength="20"><button class="btn sm" id="addP">+ اضافه</button></div>
+<div class="players-list" id="plist"></div><div class="row" style="margin-top:6px"><button class="btn ghost sm" id="rp">🎲 ۸ نفر نمونه</button><button class="btn ghost sm" id="cp">🗑️ پاک کردن</button></div></div>
+<div class="card"><h2 style="font-size:1.3rem;margin-bottom:10px">🏆 اسم تیم‌ها (قابل تغییر)</h2><div class="teams">${state.teams.map((t,i)=>`<div class="team t${i+1}"><div class="name">${i?'❤️':'💙'}<input class="tinp" id="tn${i}" value="${t.name}" maxlength="16"></div></div>`).join('')}</div></div>
+<div class="card"><h2 style="font-size:1.3rem;margin-bottom:6px">📝 سؤال‌های خودت (اختیاری)</h2><p class="sub" style="margin-bottom:10px">اگر دوست داری سؤال‌ها مخصوص جمع خودتان باشد: «قالب نمونه» را دانلود کن، در Excel یا Google Sheets پر کن، با فرمت <b>CSV UTF-8</b> ذخیره کن و آپلود کن. <b>گزینه‌ی درست را همیشه در ستون سوم (اولین ستونِ گزینه‌ها) بنویس؛ بازی خودش جای گزینه‌ها را قاطی می‌کند</b> و لازم نیست نگران ترتیب باشی. هر دسته‌ای (مغزی، معما، ایموجی، پانتومیم، سرعتی، ممنوع، چالش، شعر) که سؤال بگذاری، جای سؤال‌های پیش‌فرض می‌نشیند؛ دسته‌ی خالی از بانک پیش‌فرض می‌آید.</p>
+<div class="row" style="margin:0 0 8px"><button class="btn ghost sm" id="qtpl">📥 دانلود قالب نمونه</button><input type="file" id="qfile" accept=".csv,.txt,text/csv" class="hidden"><button class="btn sm" id="qup">📤 آپلود سؤال‌ها</button><button class="btn ghost sm" id="qdel">🗑️ حذف سؤال‌های من</button></div>
+<p class="sub c" id="qstat"></p></div>
+<div class="card"><h2 style="font-size:1.3rem;margin-bottom:6px">🎧 بانک صدای مرموز</h2><p class="sub" style="margin-bottom:10px">کلیپ صوتی بازیگر، خواننده، صدای دایی یا هر کسی را اضافه کن (آپلود فایل یا ضبط مستقیم) و اسم صاحب صدا را بنویس. در مرحله‌ی «صدای کی بود؟» پخش می‌شود. فرمت پیشنهادی: MP3 (کوتاه، ۵ تا ۱۵ ثانیه).</p>
+<div class="player-input"><input id="vname" placeholder="جواب (مثلاً: دایی علی)"><input type="file" id="vfile" accept="audio/*" class="hidden"><button class="btn ghost sm" id="vpick">📁 فایل صوتی</button><button class="btn ghost sm" id="vrec">🎙️ ضبط</button><button class="btn sm" id="vsave">💾 ذخیره</button></div>
+<p class="sub c" id="vstat"></p><div class="players-list" id="vlist"></div></div>
+<div class="card"><h2 style="font-size:1.3rem;margin-bottom:6px">🖼️ بانک عکس «این کجاست؟ یا کیه؟»</h2><p class="sub" style="margin-bottom:10px">عکس مکان، بازیگر، خواننده، ورزشکار یا اعضای فامیل را اضافه کن و اسم درستش را بنویس. سؤال‌های این مرحله از همین عکس‌ها می‌آید فرمت پیشنهادی: JPG یا PNG (عکس افقی، عرض حدود ۱۲۰۰ پیکسل).</p>
+<div class="player-input"><input id="iname" placeholder="جواب (مثلاً: برج میلاد)"><input type="file" id="ifile" accept="image/*" class="hidden"><button class="btn ghost sm" id="ipick">📁 انتخاب عکس</button><button class="btn sm" id="isave">💾 ذخیره</button></div>
+<p class="sub c" id="istat"></p><div class="players-list" id="ilist"></div></div>
+<div class="c" style="margin:20px 0"><button class="btn pulse" id="go" style="font-size:1.25rem;padding:16px 50px">🚀 شروع بازی</button>${state.players.length&&state.teams[0].members.length?'<div style="margin-top:12px"><button class="btn ghost sm" id="res">▶️ ادامه‌ی بازی قبلی</button></div>':''}</div>`;
+const pl=()=>{$('plist').innerHTML=state.players.map((p,i)=>`<span class="player-tag">${p} <span style="cursor:pointer;opacity:.6" data-r="${i}">✕</span></span>`).join('')||'<span class="sub">هنوز کسی اضافه نشده (اختیاری)</span>';
+$('plist').querySelectorAll('[data-r]').forEach(e=>e.onclick=()=>{state.players.splice(+e.dataset.r,1);save();pl()})};pl();
+$('addP').onclick=()=>{const v=$('pname').value.trim();if(!v||state.players.includes(v))return;state.players.push(v);$('pname').value='';save();pl();sfx.ding()};
+$('pname').onkeydown=e=>{if(e.key==='Enter')$('addP').click()};
+$('rp').onclick=()=>{state.players=['علی','سارا','مامان','بابا','دایی','خاله','نیما','مینا'];save();pl()};
+$('cp').onclick=()=>{state.players=[];save();pl()};
+const vl=async()=>{const a=(SRV||FPK)?((window.PARTY_ASSETS||{}).sounds||[]).map((v,i)=>({k:i,name:v.name,src:encodeURI(v.file),file:v.file})):(await vAll()).map(v=>({k:v.id,name:v.name,src:URL.createObjectURL(v.blob)}));
+$('vlist').innerHTML=a.map(v=>`<span class="vit">🎵 ${v.name} <b data-p="${v.k}">▶️</b><b data-d="${v.k}">✕</b></span>`).join('')||(FB('sounds')?'<span class="sub">📁 '+fa(FB('sounds'))+' کلیپ پیش‌فرض از پوشه‌ی sounds فعال است (با افزودن کلیپ شخصی، جایگزین می‌شوند).</span>':'<span class="sub">هنوز کلیپی نیست.</span>');
+$('vlist').querySelectorAll('[data-p]').forEach(e=>e.onclick=()=>{const v=a.find(x=>x.k==e.dataset.p);stopAudio();curAu=new Audio(v.src);curAu.play()});
+$('vlist').querySelectorAll('[data-d]').forEach(e=>e.onclick=async()=>{const v=a.find(x=>x.k==e.dataset.d);if(SRV)await srvDel('sounds',v.file.split('/').pop());else await vDel(v.k);vl()})};vl();
+$('vpick').onclick=()=>$('vfile').click();
+$('vfile').onchange=e=>{pend=e.target.files[0]||null;$('vstat').textContent=pend?'✅ فایل آماده: '+pend.name:''};
+$('vrec').onclick=async()=>{if(rec){rec.stop();return}try{const s=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];rec=new MediaRecorder(s);rec.ondataavailable=e=>ch.push(e.data);
+rec.onstop=()=>{pend=new Blob(ch,{type:rec.mimeType||'audio/webm'});s.getTracks().forEach(t=>t.stop());rec=null;$('vrec').textContent='🎙️ ضبط';$('vstat').textContent='✅ ضبط شد؛ اسم را بنویس و ذخیره کن'};
+rec.start();$('vrec').textContent='⏹️ توقف';$('vstat').textContent='🔴 در حال ضبط...'}catch(e){$('vstat').textContent='دسترسی به میکروفون ممکن نشد'}};
+$('vsave').onclick=async()=>{const n=$('vname').value.trim();if(!n||!pend){$('vstat').textContent='اسم و یک صدا (فایل/ضبط) لازم است';return}
+try{if(SRV)await srvUp('sounds',n,pend);else await vPut({id:Date.now(),name:n,blob:pend})}catch(e){$('vstat').textContent='⚠️ ذخیره نشد: '+e.message;return}
+pend=null;$('vname').value='';$('vfile').value='';$('vstat').textContent=SRV?'✅ در پوشه‌ی sounds ذخیره شد':'✅ ذخیره شد';sfx.good();vl()};
+const qs=()=>{const e=Object.keys(UQ).filter(k=>UQ[k].length);$('qstat').innerHTML=e.length?'✅ سؤال‌های شما فعال است: '+e.map(k=>TNAME[k]+' ('+fa(UQ[k].length)+')').join(' • '):'فعلاً از بانک پیش‌فرض استفاده می‌شود.'};qs();
+$('qtpl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([tplCSV()],{type:'text/csv;charset=utf-8'}));a.download='questions-template.csv';a.click()};
+$('qup').onclick=()=>$('qfile').click();
+$('qfile').onchange=async e=>{const f=e.target.files[0];if(!f)return;const t=await f.text();
+if(t.includes('\ufffd')){$('qstat').textContent='⚠️ فایل با فرمت UTF-8 ذخیره نشده؛ در Excel گزینه‌ی «CSV UTF-8» را انتخاب کن.';return}
+const r=importQ(t);if(!r.n){$('qstat').textContent='⚠️ سطر معتبری پیدا نشد؛ از قالب نمونه استفاده کن.';return}qs();$('qstat').innerHTML+=r.bad?' • ('+fa(r.bad)+' سطر ناقص نادیده گرفته شد)':'';sfx.good();e.target.value=''};
+$('qdel').onclick=()=>{UQ={};try{localStorage.removeItem('mc_uq')}catch(e){}state.used={};save();applyUQ();qs();sfx.ding()};
+const pb=$('pickdir');if(pb)pb.onclick=async()=>{try{await pickDir();renderSetup()}catch(e){}};
+let ipend=null;
+const il=async()=>{const a=(SRV||FPK)?((window.PARTY_ASSETS||{}).images||[]).map((v,i)=>({k:i,name:v.name,src:encodeURI(v.file),file:v.file})):(await iAll()).map(v=>({k:v.id,name:v.name,src:URL.createObjectURL(v.blob)}));
+$('ilist').innerHTML=a.map(v=>`<span class="vit"><img src="${v.src}" style="width:38px;height:38px;border-radius:8px;object-fit:cover"> ${v.name} <b data-d="${v.k}">✕</b></span>`).join('')||(FB('images')?'<span class="sub">📁 '+fa(FB('images'))+' عکس پیش‌فرض از پوشه‌ی images فعال است (با افزودن عکس شخصی، جایگزین می‌شوند).</span>':'<span class="sub">هنوز عکسی نیست؛ تصاویر پیش‌فرض استفاده می‌شود.</span>');
+$('ilist').querySelectorAll('[data-d]').forEach(e=>e.onclick=async()=>{const v=a.find(x=>x.k==e.dataset.d);if(SRV)await srvDel('images',v.file.split('/').pop());else await iDel(v.k);il()})};il();
+$('ipick').onclick=()=>$('ifile').click();
+$('ifile').onchange=e=>{ipend=e.target.files[0]||null;$('istat').textContent=ipend?'✅ عکس آماده: '+ipend.name:''};
+$('isave').onclick=async()=>{const n=$('iname').value.trim();if(!n||!ipend){$('istat').textContent='اسم و یک عکس لازم است';return}
+try{if(SRV)await srvUp('images',n,ipend);else await iPut({id:Date.now(),name:n,blob:ipend})}catch(e){$('istat').textContent='⚠️ ذخیره نشد: '+e.message;return}
+ipend=null;$('iname').value='';$('ifile').value='';$('istat').textContent=SRV?'✅ در پوشه‌ی images ذخیره شد':'✅ ذخیره شد';sfx.good();il()};
+$('go').onclick=()=>{const P=state.players.length>1?state.players:['بازیکن ۱','بازیکن ۲'];const s=shuf(P);
+state=fresh(state.players,state.used);state.teams.forEach((t,i)=>{t.name=$('tn'+i).value.trim()||t.name;t.members=s.filter((_,j)=>j%2==i)});state.phase='playing';save();sfx.tada();render()};
+const r=$('res');if(r)r.onclick=()=>{state.phase='playing';render()};
+}
+/* ===== صفحه‌ی بازی ===== */
+function renderPlaying(){
+stopAudio();
+if(state.stage>=STAGES.length){state.phase='finished';return render()}
+const S=cur();
+if(state.intro){stopTimer();sfx.whoosh();app.innerHTML=`<div class="card intro pop"><div class="sub">مرحله ${fa(state.stage+1)} از ${fa(STAGES.length)}</div><div class="big">${S.i}</div><h2>${S.n}</h2><p class="sub" style="max-width:520px;margin:0 auto 14px">${S.d}</p><p class="sub">${fa(S.turns)} نوبت • نوبت اول: <b style="color:var(--hot)">${state.teams[state.turn].name}</b></p><div class="row"><button class="btn pulse" id="st">بزن بریم! 🚀</button></div></div>`;
+$('st').onclick=()=>{state.intro=false;save();sfx.ding();renderPlaying()};return}
+app.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h1 style="font-size:clamp(1.2rem,4vw,1.7rem)">باشگاه ذهن 🧠</h1><div class="tb"><button class="btn ghost sm" id="mu">${mute?'🔇':'🔊'}</button><button class="btn ghost sm" id="mm">🎵</button><button class="btn ghost sm" id="rs">🔄</button></div></div>
+<div class="stage-dots">${STAGES.map((s,i)=>`<div class="stage-dot ${i<state.stage?'done':i==state.stage?'current':''}" title="${s.n}"></div>`).join('')}</div>
+<div class="teams" id="tb"></div><div class="turn-info" id="ti"></div><div class="card pop" id="box"></div>
+<div class="footer-nav"><button class="btn ghost sm" id="sk">⏭️ رد کردن مرحله</button></div>`;
+teamsBar();
+$('mu').onclick=()=>{mute=!mute;$('mu').textContent=mute?'🔇':'🔊'};
+$('mm').onclick=()=>{music(!mus);$('mm').style.opacity=mus?1:.5};$('mm').style.opacity=mus?1:.5;
+$('rs').onclick=()=>{if(confirm('مطمئنی؟ بازی از اول شروع می‌شود.')){stopTimer();state=fresh(state.players,state.used);save();render()}};
+$('sk').onclick=goNext;
+const b=$('box');({mcq,card,wheel,voice,imgs,speed})[S.k](b,S);
+}
+function teamsBar(){$('tb').innerHTML=state.teams.map((t,i)=>`<div class="team t${i+1} ${state.turn==i?'active':''}"><div class="turn-badge">نوبت</div><div class="name">${i?'❤️':'💙'} ${t.name}</div><div class="score">${fa(t.score)}</div><div class="sub" style="font-size:.75rem">${fa(t.members.length)} نفر</div></div>`).join('');
+const S=cur();$('ti').innerHTML=`${S.i} ${S.n} — نوبت ${fa(state.tis+1)} از ${fa(S.turns)} • <span class="tname t${state.turn+1}">${team().name}</span>${S.who?` • 🎯 <b>${performer()}</b> بیاید وسط!`:''}`}
+const head=S=>`<div class="c" style="margin-bottom:10px"><span class="sub" style="font-size:.9rem">${S.i} ${S.n}</span></div><div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div><div class="timer-text" id="timerText">${fa(S.time||0)}</div>`;
+function done(box,ok,pts,txt){stopTimer();stopAudio();const t=team();let big=pts>=35;
+if(ok){t.score+=pts;big?sfx.win():sfx.good();confetti(big?160:60)}else{t.score-=(cur().bad||0);sfx.bad();box.classList.add('shake')}
+const fb=$('fb');fb.innerHTML=(ok?`<span style="color:var(--ok)">${pick(GOOD)} +${fa(pts)}</span>`:`<span style="color:var(--bad)">${pick(BAD)}${cur().bad?' -'+fa(cur().bad):''}</span>`)+(txt?`<br><span style="font-size:.95rem;color:var(--soft)">${txt}</span>`:'');
+fb.classList.add('pop');save();teamsBar();box.querySelectorAll('.opt,[data-ok]').forEach(e=>e.disabled=true);
+const q=box.querySelector('[data-ok]');if(q)q.parentElement.classList.add('hidden');
+const bt=document.createElement('button');bt.className='btn sm pulse';bt.textContent='نوبت بعدی ←';bt.onclick=nextTurn;const w=document.createElement('div');w.className='row';w.append(bt);fb.after(w)}
+function mcq(box,S){const q=S.pool[pickIdx(S.id,S.pool.length)];
+box.innerHTML=head(S)+`<div class="question">${q.q}</div><div class="opts">${shuf(q.opts.map((_,i)=>i)).map(i=>`<button class="opt" data-i="${i}">${q.opts[i]}</button>`).join('')}</div><div class="fb" id="fb"></div>`;
+let fin=0;const f=ok=>{if(fin)return;fin=1;box.querySelector(`[data-i="${q.a}"]`).classList.add('correct');done(box,ok,S.pts,(ok?'':'جواب درست: <b>'+q.opts[q.a]+'</b><br>')+(q.why||''))};
+box.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{if(fin)return;if(+o.dataset.i!==q.a)o.classList.add('wrong');f(+o.dataset.i===q.a)});
+startTimer(S.time,()=>f(false))}
+function card(box,S,it,extra){it=it||S.pool[pickIdx(S.id,S.pool.length)];
+const hide=S.secret;
+box.innerHTML=head(S)+(S.sub?`<p class="c sub">${S.sub}</p>`:'')+`<p class="sub c" style="margin:8px 0">${hide?'فقط اجراکننده ببیند! 🙈':S.d}</p>
+<div class="${S.cls||'pantomime-word'} bigcard" id="bc" style="${S.bg?'background:'+S.bg+';':''}${hide?'filter:blur(14px);cursor:pointer':''}">${it.img?`<div class="img-box" style="margin:0">${it.img}</div>`:''}${it.t?`<div>${it.t}</div>`:''}${extra?extra.html:''}</div>
+${it.f?`<div style="border:2px dashed ${it.fc||'#ff6b91'};border-radius:16px;padding:14px;margin:14px 0;text-align:center"><b>${it.fl}</b><br>${it.f.map(w=>`<span class="chip" style="background:${it.fc||'#ff6b91'}33">${w}</span>`).join('')}</div>`:''}
+${hide?'<p class="sub c">👆 روی کارت بزن تا نمایش داده شود</p>':''}<div class="fb" id="fb"></div>
+<div class="row ${hide||extra?'hidden':''}" id="btns"><button class="btn" data-ok="1" id="ok">✅ ${S.ok} (+${fa(S.pts)})</button><button class="btn ghost" data-ok="0" id="no">❌ ${S.no}${S.bad?` (-${fa(S.bad)})`:''}</button></div>`;
+let fin=0;const f=ok=>{if(fin)return;fin=1;done(box,ok,S.pts,it.a?(ok?'':'جواب: ')+(ok?'جواب: ':'')+it.a:'')};
+const go=()=>{$('btns').classList.remove('hidden');startTimer(S.time,()=>f(false))};
+$('ok').onclick=()=>f(1);$('no').onclick=()=>f(0);
+if(hide){const bc=$('bc');bc.onclick=()=>{if(bc.dataset.r)return;bc.dataset.r=1;bc.style.filter='none';sfx.ding();go()}}
+else if(extra)extra.setup(go);else startTimer(S.time,()=>f(false));}
+async function imgs(box,S){const raw=(SRV||FPK)?[]:await iAll(),all=raw.length?raw.map(v=>({id:v.id,name:v.name,src:URL.createObjectURL(v.blob)})):((window.PARTY_ASSETS||{}).images||[]).map((f,i)=>({id:'f'+i,name:f.name,src:encodeURI(f.file)})),u=state.used.imgs=state.used.imgs||[];if(!all.length)return card(box,S);let a=all.filter(v=>!u.includes(v.id));if(!a.length){u.length=0;a=all}
+const v=pick(a);u.push(v.id);save();card(box,S,{img:`<img src="${v.src}" style="width:100%;max-height:50vh;object-fit:contain;display:block">`,a:v.name})}
+async function voice(box,S){const raw=(SRV||FPK)?[]:await vAll(),all=raw.length?raw.map(v=>({id:v.id,name:v.name,src:URL.createObjectURL(v.blob)})):((window.PARTY_ASSETS||{}).sounds||[]).map((f,i)=>({id:'f'+i,name:f.name,src:encodeURI(f.file)})),u=state.used.voice=state.used.voice||[];let a=all.filter(v=>!u.includes(v.id));
+if(!a.length&&all.length){u.length=0;a=all}
+if(!a.length){box.innerHTML=`<div class="c intro"><div class="big">🎧</div><h3>هنوز کلیپ صوتی اضافه نشده!</h3><p class="sub">کلیپ‌ها را در پوشه‌ی sounds بگذارید یا در صفحه‌ی اول بخش «بانک صدای مرموز» اضافه کنید.</p><div class="row"><button class="btn" id="sk2">⏭️ رد شدن از این مرحله</button></div></div>`;$('sk2').onclick=goNext;return}
+const v=pick(a);u.push(v.id);save();
+card(box,S,{t:'🎧 صدای مرموز! این صدای کیست؟ (بازیگر / خواننده / ...)',a:v.name},{html:`<div class="eq" id="eq">${'<i></i>'.repeat(11)}</div><button class="btn" id="pl" style="margin-top:6px">▶️ پخش صدا</button>`,setup:go=>{
+stopAudio();const au=curAu=new Audio(v.src);let st=0;au.onended=()=>$('eq').classList.remove('on');
+$('pl').onclick=()=>{if(!st){st=1;go();sfx.drum()}au.currentTime=0;au.play();$('eq').classList.add('on')}}})}
+function speed(box,S){const w=shuf(SPEEDW);let i=0,n=0;
+box.innerHTML=head(S)+`<p class="sub c">${S.d}</p><div class="pantomime-word" id="sw" style="background:${S.bg}">آماده‌اید؟ 😎</div><div class="c" id="cnt" style="font-weight:900;font-size:1.3rem;min-height:2em"></div><div class="row" id="sb"><button class="btn pulse" id="stt">▶️ شروع ۶۰ ثانیه!</button></div><div class="fb" id="fb"></div>`;
+const show=()=>{$('sw').textContent=w[i%w.length];$('sw').classList.remove('pop');void $('sw').offsetWidth;$('sw').classList.add('pop');$('cnt').textContent='✅ '+fa(n)+' کلمه • '+fa(n*S.pts)+' امتیاز'};
+const end=()=>{stopTimer();$('sb').innerHTML='';$('sw').textContent='⏰ وقت تمام!';team().score+=n*S.pts;n?(sfx.win(),confetti(40+n*25)):sfx.bad();
+$('fb').innerHTML=`<span style="color:${n?'var(--ok)':'var(--bad)'}">${n?pick(GOOD)+' '+fa(n)+' کلمه = +'+fa(n*S.pts):pick(BAD)}</span>`;save();teamsBar();
+$('sb').innerHTML='<button class="btn sm pulse" id="nb">نوبت بعدی ←</button>';$('nb').onclick=nextTurn};
+$('stt').onclick=()=>{sfx.drum();$('sb').innerHTML='<button class="btn" id="y">✅ درست گفتند</button><button class="btn ghost" id="p">⏭️ رد کن</button>';show();startTimer(S.time,end);
+$('y').onclick=()=>{n++;sfx.good();i++;show()};$('p').onclick=()=>{sfx.tick();i++;show()}}}
+function wheel(box,S){const N=WH.length,G=360/N;let rot=0;
+box.innerHTML=`<div class="c" style="margin-bottom:6px"><span class="sub">${S.i} ${S.n}</span></div><div class="wheel-pointer">▼</div>
+<div class="spin-wheel" id="wh" style="background:conic-gradient(${WH.map((_,i)=>`${WC[i%12]} ${i*G}deg ${(i+1)*G}deg`).join(',')})"><div class="wheel-center">🎰</div>${WH.map((w,i)=>`<span class="wlab" style="--a:${i*G+G/2}deg">${w.e}</span>`).join('')}</div><div class="wheel-result" id="wr">چرخ را بچرخان!</div>
+<div class="row"><button class="btn pulse" id="sp">🎲 بچرخان!</button></div><div class="row" id="nx"></div>
+<div class="c" style="margin-top:12px">${WH.map(w=>`<span class="chip" style="font-size:.78rem">${w.e} ${w.l.replace(/ \(.*?\)/,'')}</span>`).join('')}</div>`;
+const spin=()=>{$('sp').style.display='none';$('nx').innerHTML='';sfx.whoosh();sfx.drum();const w=rnd(N),W=WH[w],tg=360-(w*G+G/2),cu=rot%360;
+rot+=360*6+(((tg-cu)%360)+360)%360;$('wh').style.transform=`rotate(${rot}deg)`;$('wr').textContent='در حال چرخش... 🌀';
+setTimeout(()=>{const t=team(),o=state.teams[1-state.turn];
+if(W.s){t.score+=W.s;W.s>0?sfx.tada():sfx.boing()}
+if(W.w){[t.score,o.score]=[o.score,t.score];sfx.boing()}
+if(W.g){o.score+=W.g;sfx.good()}
+if(W.again)sfx.ding();
+if(W.f||W.s>0)confetti(80);
+$('wr').innerHTML=`${W.e} ${W.l}`+(W.f?'<br><span style="font-size:.9rem;color:var(--soft)">همین حالا انجامش بدهید! 🎬</span>':'');$('wr').classList.remove('pop');void $('wr').offsetWidth;$('wr').classList.add('pop');save();teamsBar();
+if(W.again){$('sp').style.display='';$('sp').textContent='🎲 دوباره بچرخان!'}
+else{$('nx').innerHTML='<button class="btn sm pulse" id="nb">نوبت بعدی ←</button>';$('nb').onclick=nextTurn}},3600)};
+$('sp').onclick=spin}
+/* ===== پایان ===== */
+function renderFinished(){stopTimer();music(false);const[a,b]=state.teams,w=a.score>b.score?a:b.score>a.score?b:null,P=state.players.length?state.players:['همه'];const m=()=>pick(P);
+const AW=['بهترین نقش «درخت» در پانتومیم','دارنده‌ی نشان «جواب غلط با اعتماد به‌نفس بالا»','بهترین صداپیشه‌ی مهمانی','قهرمان خوردن آخرین تکه‌ی شیرینی','فیلسوف شب؛ کسی که پای هر سؤالی نظر داد','استاد دروغ‌گویی (البته فقط در بازی!)','رقصنده‌ی برتر چرخ شانس','کسی که همه از خنده‌اش خندیدند'];
+const aw=shuf(AW).slice(0,5);
+app.innerHTML=`<div class="c" style="margin:10px 0"><h1>🏆 بازی تمام شد! 🏆</h1></div><div class="card pop"><div class="teams">${state.teams.map((t,i)=>`<div class="team t${i+1} ${w===t?'active':''} c">${w===t?'<div style="font-size:2.2rem">👑</div>':''}<div class="name" style="justify-content:center">${i?'❤️':'💙'} ${t.name}</div><div class="score" style="font-size:3rem">${fa(t.score)}</div></div>`).join('')}</div>
+<h2 class="c" style="font-size:1.3rem;margin:18px 0 10px">${w?`🥇 قهرمان: ${w.name}`:'🤝 مساوی! هر دو تیم قهرمانند'}</h2><h3 class="c" style="margin-bottom:10px">🎁 جوایز طنز</h3>
+<div class="awards">${aw.map((x,i)=>`<div class="award pop" style="animation-delay:${i*.15}s"><span class="icon">${['🥇','😂','🎤','🍰','🤔','🤥','💃','🤣'][AW.indexOf(x)]}</span><span class="text"><b>${m()}</b> — ${x}</span></div>`).join('')}</div>
+<div class="c" style="margin-top:22px"><button class="btn" id="ng">🔄 بازی دوباره</button></div></div>`;
+$('ng').onclick=()=>{state=fresh(state.players,state.used);save();render()};sfx.tada();confetti(250);setTimeout(()=>confetti(150),700)}
+/* ===== شروع ===== */
+document.body.insertAdjacentHTML('beforeend','<canvas id="cf"></canvas><div class="fl">'+[...'🎭🧠🎤🎉🎲📜🎧🤪🎬🍉'].map((e,i)=>`<span style="left:${i*10+3}%;font-size:${1.6+i%3}rem;animation-duration:${18+i*3}s;animation-delay:-${i*4}s">${e}</span>`).join('')+'</div>');
+/* ===== حالت تلویزیون ===== */
+let wl=null;
+function toast(m){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;left:50%;bottom:64px;transform:translateX(-50%);background:#000c;color:#fff;padding:10px 18px;border-radius:14px;z-index:120;max-width:90%;text-align:center;font-weight:700';document.body.append(t)}t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',6000)}
+async function tvMode(){const d=document,e=d.documentElement,on=!d.body.classList.contains('tv');
+if(on){const rf=e.requestFullscreen||e.webkitRequestFullscreen;let fs=false;
+if(rf){try{await rf.call(e);fs=true}catch(x){}}
+try{await screen.orientation.lock('landscape')}catch(x){}
+try{wl=await navigator.wakeLock.request('screen')}catch(x){}
+d.body.classList.add('tv');$('tvb').textContent='❌ خروج از حالت تلویزیون';
+if(!fs)toast('📱 این مرورگر تمام‌صفحه‌ی صفحه را قبول نمی‌کند: گوشی را افقی بگیر (قفل چرخش خاموش باشد) تا تصویر تمام‌صفحه روی تلویزیون بیفتد.')}
+else tvOff()}
+function tvOff(){const d=document;try{if(d.fullscreenElement||d.webkitFullscreenElement)(d.exitFullscreen||d.webkitExitFullscreen).call(d)}catch(x){}
+try{screen.orientation.unlock()}catch(x){}try{wl&&wl.release()}catch(x){}wl=null;d.body.classList.remove('tv');const b=$('tvb');if(b)b.textContent='📺 حالت تلویزیون'}
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{if(!document.fullscreenElement&&!document.webkitFullscreenElement&&document.body.classList.contains('tv')&&!window._tvNoFs)tvOff()}));
+document.body.insertAdjacentHTML('beforeend','<button class="btn ghost sm" id="tvb" style="position:fixed;left:10px;bottom:10px;z-index:50">📺 حالت تلویزیون</button>');
+$('tvb').onclick=tvMode;
+document.addEventListener('click',()=>{try{ctx()}catch(e){}},{once:true});
+if(window.PARTY_QUESTIONS&&!Object.keys(UQ).length)importQ(window.PARTY_QUESTIONS,0);
+fetch('api/ping',{cache:'no-store'}).then(x=>x.ok?x.json():{}).then(j=>{if(j&&j.ok){SRV=true;window.PARTY_ASSETS=j.assets;if(state.phase=='setup')render()}}).catch(()=>{});
+if(location.protocol.startsWith('http')){ghList();if(!Object.keys(UQ).length)fetch('questions.csv',{cache:'no-store'}).then(x=>x.ok?x.text():'').then(t=>{if(t&&!t.includes('<html')&&importQ(t,0).n&&state.phase=='setup')render()}).catch(()=>{})}
+render();
+
+</script>
+</body>
+</html>
